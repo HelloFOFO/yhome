@@ -46,3 +46,7 @@ var heredoc = function(fn) {
 // }
 
 
+exports.insertJSJ = function(rawData,cb){
+    console.log(rawData)
+    cb("data logged")
+}

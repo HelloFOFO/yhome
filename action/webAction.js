@@ -17,15 +17,13 @@ exports.wxAuth = function(req, res, next){
     }
 }
 
-exports.renderIndex = function(req, res){
-    if(req.session.openId){
-        res.redirect('/abb_main.html')
-    }
-    else{
-        res.json('bad access')
-    }
+exports.insertJSJ = function(req, res){
+    let rawData = req.body
+    dbService.insertJSJ(rawData, function(err){
+        console.log(err)
+        res.json({"errorCode":200,"errorMsg":null,"data":null});
+    })
 }
-
 
 
 

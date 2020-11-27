@@ -5,18 +5,18 @@ var debug = require('./.debug');
 var db = {};
 if(debug){
     //非生产环境
-    db.slaveHost = process.env.db_slaveHost||'127.0.0.1';
-    db.host      = process.env.db_host||'127.0.0.1';
-    db.user      = 'abb';
-    db.password  = '90op()OPabb';
-    db.database  = 'ice104';
+    db.slaveHost = process.env.db_slaveHost||'106.14.10.98';
+    db.host      = process.env.db_host||'106.14.10.98';
+    db.user      = 'sow';
+    db.password  = '90op()OP';
+    db.database  = 'yhome';
 }else{
     //生产环境
     db.slaveHost = '127.0.0.1';
     db.host      = '127.0.0.1';
-    db.user      = 'root';
-    db.password  = 'iec104';
-    db.database  = 'iec104';
+    db.user      = 'sow';
+    db.password  = '90op()OP';
+    db.database  = 'yhome';
 }
 
 var wx = {}
