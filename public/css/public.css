@@ -1,0 +1,44 @@
+html{
+    font-family: 'Microsoft YaHei';
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+body{
+    font-family: "Microsoft YaHei","微软雅黑","Hiragino Sans GB",tahoma,arial,simhei;
+    font-size: 12px;
+}
+
+.float-l{
+    float:left;
+}
+.float-r{
+    float:right;
+}
+.div-border{
+    border:1px dashed red;
+}
+
+
+body,h1,h2,h3,h4,h5,h6,hr,p,dl,dt,dd,ul,ol,li,form,button,input,textarea,th,td {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+a {
+    color: #484848;
+    text-decoration: none;
+}
+
+a:visited {
+}
+
+a:active, a:hover {
+    text-decoration: none;
+    color: #88BE4E;
+}
+
+a:focus,input:hover,button:hover,input[type='button']:hover {
+    outline: none;
+}
+

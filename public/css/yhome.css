@@ -1,0 +1,20 @@
+.div_head{
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.div_content{
+    min-height: 800px;
+    background-color: #EAEAEA;
+    width: 100%;
+}
+
+.div_foot{
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0px;
+    height: 30px;
+    line-height: 30px;
+}

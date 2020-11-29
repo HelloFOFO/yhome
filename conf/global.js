@@ -20,16 +20,25 @@ if(debug){
 }
 
 var wx = {}
-wx = {
-    appId: "wxec41a645728e9c10",
-    appSecret: "e9a82f49a866bf57d4caea9f7d89e33c",
-    wxHost: "api.weixin.qq.com",
-    wxPort: 443,
-    domain: 'https://api.weixin.qq.com',
-    token: "irobot",
-    mchId: "1490677542",
-    partnerKey: "dd98e72a20d07053a1f49d0g0e7c4450",
-    payNotifyUrl: "http://irobot.zhongzhengtx.com/iRobot/wx/payNotify"
+if(debug){
+    wx = {
+        appId: "wxf6e1ef44ca9690de",
+        appSecret: "2c82096d96028b67f591bbf3273efd19",
+        wxHost: "api.weixin.qq.com",
+        wxPort: 443,
+        domain: 'https://api.weixin.qq.com',
+        token: "irobot"
+    }
+}
+else{
+    wx = {
+        appId: "wx17514164c85fe9e0",
+        appSecret: "1db09a56b26a08ccff5fb2d8d4389f98",
+        wxHost: "api.weixin.qq.com",
+        wxPort: 443,
+        domain: 'https://api.weixin.qq.com',
+        token: "irobot"
+    }
 }
 
 module.exports = {db:db, wx:wx, nbq_bl: 10, debug: debug, openId: "ABB"};
