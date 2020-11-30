@@ -1,0 +1,65 @@
+<%include mHeader%>
+
+<div class="div_head">
+    <span id="span_title">我的订单列表</span>
+</div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+
+
+    <div class="div_sec">
+        <div class="div_sec_head">
+            <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;所有订单，共-<%= orders.length%>-条
+        </div>
+        <div class="container">
+        <% orders.forEach(function(order) { %>
+            <a href='/onlinemarket/order/<%= order.id%>'>
+            <div class="row" style="border: 1px solid #00a65a; border-radius: 5px; padding: 5px 0px; margin: 0px 2px 5px 2px; background-color: #e9e9e9;">
+                <div class="col-xs-4 div_sec_key">预订时间</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= moment(order.created_at).format('YYYY-MM-DD HH:mm:ss')%></span>
+                </div>
+
+                <div class="col-xs-4 div_sec_key">联系信息</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= order.contactName%>;<%= order.contactMobile%></span>
+                </div>
+
+                <div class="col-xs-4 div_sec_key">提货地址</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= order.pickupLocation%></span>
+                </div>
+
+                <div class="col-xs-4 div_sec_key">支付金额</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= order.total_price%>&nbsp;元</span>
+                </div>
+
+                <div class="col-xs-4 div_sec_key">预订明细</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;">
+                    <% let itemNames = "";
+                     order.orderItems.forEach(function(item) { itemNames += item.name+";"}); %>
+                    <%= itemNames.substr(0, itemNames.length -1)%>
+
+                    </span>
+                </div>
+
+            </div>
+            </a>
+        <%}); %>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+    <!--额外的一些JavaScript放在这儿-->
+
+</script>
+
+<%include mFooter%>
+

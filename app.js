@@ -8,6 +8,7 @@ var schedule = require('node-schedule');
 var jobs = require('./libs/jobs');
 var webAction = require('./action/webAction')
 var moment = require('moment');
+let underscore = require('underscore')
 
 var indexRouter = require('./routes/index');
 
@@ -21,6 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.locals.moment = moment;
+app.locals._ = underscore;
 
 app.use(logger('dev'));
 app.use(express.json());

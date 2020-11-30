@@ -4,6 +4,7 @@ let cfg = require('./../conf/global')
 let weiXinSdk = require('node-weixin-media-platform-api')().init(cfg.wx)
 let moment = require('moment')
 
+
 exports.wxAuth = function(req, res, next){
     console.log('begin weixin auth...')
     weiXinSdk.auth(req, res, next)
@@ -73,7 +74,25 @@ exports.jsjOnlineOrderFeedback = function(req, res){
 }
 
 exports.renderMyOnlineOrders = function(req, res){
-    res.send("订单列表页:")
+    let openId = req.session.openId
+    dbService.getMyOnlineOrders(openId, function(data){
+
+        if(data){
+            let orders = []
+
+            for(let i=0; i<data.length; i++){
+                let orderInfo = getJsjOrderDetail(data[i])
+                delete orderInfo.raw_data
+                orders.push(orderInfo)
+            }
+
+            // console.log("MyOrders:", orders)
+            res.render('mMyOnlineOrders', {"orders": orders})
+        }
+        else{
+            res.render('yError',{title:"系统异常", message:"没有找到您的订单~"})
+        }
+    })
 }
 
 exports.renderOnlineOrder = function(req, res){
@@ -85,16 +104,13 @@ exports.renderOnlineOrder = function(req, res){
             // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
             // 这样前端就不需要改动了
 
-            // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
-            // 这样前端就不需要改动了
-
             let orderInfo = getJsjOrderDetail(data)
             // console.log("ORDERINFO PARSED:", orderInfo)
 
             // 最后删掉不需要的属性
             delete orderInfo.raw_data
 
-            res.render('monlineorder', orderInfo)
+            res.render('mOnlineOrder', orderInfo)
         }
         else{
             res.render('yError',{title:"系统异常", message:"没找到对应的订单信息~"})

@@ -191,6 +191,7 @@ exports.getJSJOnlineOrderID = function(param, cb){
     );
 }
 
+// 根据ID获取在线订单信息
 exports.getOnlineOrderInfo = function(orderId, cb){
     console.log("QUERY_OrderID: ", orderId)
     async.auto({
@@ -237,6 +238,53 @@ exports.getOnlineOrderInfo = function(orderId, cb){
             } else {
                 // console.log("RESULTS:", results)
                 cb(results.order);
+            }
+        }
+    );
+}
+
+// 获取我的在线订单列表
+exports.getMyOnlineOrders = function(openId, cb){
+    console.log("QUERY_OpenID: ", openId)
+    async.auto({
+            orders:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                         FROM   form_jsj
+                         WHERE  form_type = 'ONLINEORDER' AND x_field_weixin_openid = ?
+                         ORDER  BY id DESC;
+                         */});
+
+                        let sqlParam = []
+                        sqlParam.push(openId)
+
+                        conn.query(sql, sqlParam, function (error, result) {
+                            conn.release();
+                            if (error) {
+                                console.log("ERROR_DB_QUERY:", error)
+                                cb1("error_db_query", null);
+                            } else {
+                                cb1(null, result);
+                            }
+                        });
+                    }
+                });
+            }
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb(null);
+            } else {
+                // console.log("RESULTS:", results)
+                cb(results.orders);
             }
         }
     );
