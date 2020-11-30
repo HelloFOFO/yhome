@@ -35,12 +35,11 @@
                     <span style="margin-left: 5px; font-size: 14px;"><%= order.total_price%>&nbsp;元</span>
                 </div>
 
-                <div class="row" style="margin-bottom: 5px;">
-                    <div class="col-xs-4 div_sec_key">支付状态</div>
-                    <div class="col-xs-8 div_sec_value">
-                        <span style="margin-left: 5px; font-size: 14px;"><%= order.trade_status=='SUCCESS'?"支付成功":"支付失败"%></span>
-                    </div>
+                <div class="col-xs-4 div_sec_key">支付状态</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= order.trade_status=='SUCCESS'?"支付成功":"支付失败"%></span>
                 </div>
+
                 <div class="col-xs-4 div_sec_key">预订明细</div>
                 <div class="col-xs-8 div_sec_value">
                     <span style="margin-left: 5px; font-size: 14px;">
