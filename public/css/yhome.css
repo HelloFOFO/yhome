@@ -3,6 +3,7 @@
     height: 30px;
     line-height: 30px;
     text-align: center;
+    background-color: #EAEAEA;
 }
 
 .div_content{
@@ -17,4 +18,19 @@
     margin-bottom: 0px;
     height: 30px;
     line-height: 30px;
+}
+
+.div_sec{
+    background-color: white; margin: 10px 5px; border-radius: 5px;border-top: 3px solid #00a65a; padding-bottom: 8px;
+}
+.div_sec_head{
+    font-size: 18px;
+    padding: 8px;
+}
+
+.div_sec_key{
+    text-align: right; font-size: 14px;font-weight: bold;
+}
+.div_sec_value{
+    font-size: 14px; text-align: left;
 }

@@ -1,0 +1,64 @@
+<%include mHeader%>
+
+<div class="div_head">
+    <span id="span_title">查看订单详情</span>
+</div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+    <div class="div_sec">
+        <div class="div_sec_head">
+            <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;基本信息
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">确认码</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= gen_code%></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">支付方式</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= payment_method=='wxpay'?"微信支付":"其他"%></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">支付状态</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= trade_status=='SUCCESS'?"支付成功":"其他"%></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">支付金额</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= total_price%>&nbsp;元</span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">预订时间</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= moment(created_at).format('YYYY-MM-DD HH:mm:ss')%></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="div_sec">
+        <div class="div_sec_head">
+            <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;订单内容
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">预订时间</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= moment(created_at).format('YYYY-MM-DD HH:mm:ss')%></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    <!--额外的一些JavaScript放在这儿-->
+</script>
+
+<%include mFooter%>
+

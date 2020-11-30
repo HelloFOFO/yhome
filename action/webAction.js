@@ -41,7 +41,7 @@ exports.insertJSJ = function(req, res){
     })
 }
 
-exports.jsjFeedback = function(req, res){
+exports.jsjOnlineOrderFeedback = function(req, res){
     let genCode = req.query.gen_code
     let serialNumber = req.query.serial_number
     let openId = req.session.openId
@@ -57,7 +57,7 @@ exports.jsjFeedback = function(req, res){
             serialNumber: serialNumber
         }
 
-        dbService.getJSJOnlineOrder(param, function(data){
+        dbService.getJSJOnlineOrderID(param, function(data){
             if(data && data.length == 1){
                 res.redirect('/onlinemarket/order/'+data[0].id)
             }
@@ -78,5 +78,25 @@ exports.renderMyOnlineOrders = function(req, res){
 
 exports.renderOnlineOrder = function(req, res){
     let orderId = req.params.id
-    res.send("订单详情页:"+orderId.toString())
+    // res.send("订单详情页:"+orderId.toString())
+
+    dbService.getOnlineOrderInfo(orderId, function(data){
+        if(data){
+            // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
+            // 这样前端就不需要改动了
+
+            // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
+            // 这样前端就不需要改动了
+
+
+
+            // 最后删掉不需要的属性
+            delete data.raw_data
+
+            res.render('monlineorder', data)
+        }
+        else{
+            res.render('yError',{title:"系统异常", message:"没找到对应的订单信息~"})
+        }
+    })
 }

@@ -131,7 +131,7 @@ exports.insertJSJ = function(formType, rawData, cb){
 }
 
 // 获取金数据提交后的订单ID
-exports.getJSJOnlineOrder = function(param, cb){
+exports.getJSJOnlineOrderID = function(param, cb){
     console.log("QUERY_PARAMS: ",JSON.stringify(param))
 
     let openId = param.openId
@@ -186,6 +186,57 @@ exports.getJSJOnlineOrder = function(param, cb){
             } else {
                 console.log("RESULTS:", results)
                 cb(results.orders);
+            }
+        }
+    );
+}
+
+exports.getOnlineOrderInfo = function(orderId, cb){
+    console.log("QUERY_OrderID: ", orderId)
+    async.auto({
+            order:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                         FROM   form_jsj
+                         WHERE  form_type = 'ONLINEORDER' AND id = ?
+                         */});
+
+                        let sqlParam = []
+                        sqlParam.push(orderId)
+
+                        conn.query(sql, sqlParam, function (error, result) {
+                            conn.release();
+                            if (error) {
+                                console.log("ERROR_DB_QUERY:", error)
+                                cb1("error_db_query", null);
+                            } else {
+                                console.log("DB_RESULTS:", result)
+                                if( result.length == 1){
+                                    cb1(null, result[0]);
+                                }
+                                else{
+                                    cb1("more than one row found", null);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb(null);
+            } else {
+                console.log("RESULTS:", results)
+                cb(results.order);
             }
         }
     );
