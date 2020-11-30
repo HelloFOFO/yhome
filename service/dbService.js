@@ -172,7 +172,7 @@ exports.getJSJOnlineOrderID = function(param, cb){
                                 console.log("ERROR_DB_QUERY:", error)
                                 cb1("error_db_query", []);
                             } else {
-                                console.log("DB_RESULTS:", results)
+                                // console.log("DB_RESULTS:", results)
                                 cb1(null, results);
                             }
                         });
@@ -184,7 +184,7 @@ exports.getJSJOnlineOrderID = function(param, cb){
                 console.log("ERROR_FUNCTION:", err)
                 cb([]);
             } else {
-                console.log("RESULTS:", results)
+                // console.log("RESULTS:", results)
                 cb(results.orders);
             }
         }
@@ -218,7 +218,7 @@ exports.getOnlineOrderInfo = function(orderId, cb){
                                 console.log("ERROR_DB_QUERY:", error)
                                 cb1("error_db_query", null);
                             } else {
-                                console.log("DB_RESULTS:", result)
+                                // console.log("DB_RESULTS:", result)
                                 if( result.length == 1){
                                     cb1(null, result[0]);
                                 }
@@ -235,7 +235,7 @@ exports.getOnlineOrderInfo = function(orderId, cb){
                 console.log("ERROR_FUNCTION:", err)
                 cb(null);
             } else {
-                console.log("RESULTS:", results)
+                // console.log("RESULTS:", results)
                 cb(results.order);
             }
         }

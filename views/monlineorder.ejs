@@ -47,11 +47,38 @@
             <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;订单内容
         </div>
         <div class="row" style="margin-bottom: 5px;">
-            <div class="col-xs-4 div_sec_key">预订时间</div>
+            <div class="col-xs-4 div_sec_key">联系人</div>
             <div class="col-xs-8 div_sec_value">
-                <span style="margin-left: 5px; font-size: 14px;"><%= moment(created_at).format('YYYY-MM-DD HH:mm:ss')%></span>
+                <span style="margin-left: 5px; font-size: 14px;"><%= contactName%></span>
             </div>
         </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">联系电话</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= contactMobile%></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">提货地址</div>
+            <div class="col-xs-8 div_sec_value">
+                <span style="margin-left: 5px; font-size: 14px;"><%= pickupLocation%></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-xs-4 div_sec_key">预订内容</div>
+            <div class="col-xs-8 div_sec_value">
+                <% orderItems.forEach(function(item) { %>
+                    <p>
+                        <span style="margin-left: 5px; font-size: 14px; color: grey "><%= item.number%>&times;</span>
+                        <span style="margin-left: 5px; font-size: 14px; "><%= item.name%></span>
+                    </p>
+                <%}); %>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align:center; width: 100%; margin-top: 30px;">
+        <a style="font-size: 12px; color: #0da3e2 " href="/onlinemarket/myorders">查看历史订单</a>
     </div>
 </div>
 

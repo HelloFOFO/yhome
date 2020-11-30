@@ -88,15 +88,52 @@ exports.renderOnlineOrder = function(req, res){
             // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
             // 这样前端就不需要改动了
 
-
+            let orderInfo = getJsjOrderDetail(data)
+            // console.log("ORDERINFO PARSED:", orderInfo)
 
             // 最后删掉不需要的属性
-            delete data.raw_data
+            delete orderInfo.raw_data
 
-            res.render('monlineorder', data)
+            res.render('monlineorder', orderInfo)
         }
         else{
             res.render('yError',{title:"系统异常", message:"没找到对应的订单信息~"})
         }
     })
+}
+
+let getJsjOrderDetail = function(orderData){
+    let orderInfo = orderData
+    let jsjItemMapping = {
+        "XpjHqw":{
+            "items": "field_1",
+            "contactName": "field_2",
+            "contactMobile": "field_3",
+            "pickupLocation": "field_6",
+        }
+    }
+    // console.log("RAWDATA:",orderData)
+    try{
+        let rawData = JSON.parse(orderData.raw_data)
+        // console.log("RAWDATA PARSED:",rawData)
+        // console.log(jsjItemMapping[orderData.form].items)
+        // console.log(jsjItemMapping[orderData.form].contactName)
+        // console.log(jsjItemMapping[orderData.form].contactMobile)
+        // console.log(jsjItemMapping[orderData.form].pickupLocation)
+
+        orderInfo.orderItems = rawData.entry[jsjItemMapping[orderData.form].items]
+        orderInfo.contactName = rawData.entry[jsjItemMapping[orderData.form].contactName]
+        orderInfo.contactMobile = rawData.entry[jsjItemMapping[orderData.form].contactMobile]
+        orderInfo.pickupLocation = rawData.entry[jsjItemMapping[orderData.form].pickupLocation]
+    }
+    catch (e) {
+        console.log("ERROR PARSE ORDERDATA:", orderData)
+        orderInfo.orderItems = []
+        orderInfo.contactName = ""
+        orderInfo.contactMobile = ""
+        orderInfo.pickupLocation = ""
+    }
+
+
+    return orderInfo
 }
