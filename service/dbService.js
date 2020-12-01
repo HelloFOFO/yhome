@@ -66,8 +66,8 @@ exports.insertJSJ = function(formType, rawData, cb){
     let x_field_weixin_province = rawData.entry.x_field_weixin_province_city.province || ''
     let x_field_weixin_city = rawData.entry.x_field_weixin_province_city.city || ''
     let creator_name = rawData.entry.creator_name || ''
-    let created_at = rawData.entry.created_at || null
-    let updated_at = rawData.entry.updated_at || null
+    let created_at = rawData.entry.created_at ? moment(rawData.entry.created_at).format('YYYY-MM-DD HH:mm:ss.SSS') : null
+    let updated_at = rawData.entry.updated_at ? moment(rawData.entry.updated_at).format('YYYY-MM-DD HH:mm:ss.SSS') : null
     let info_remote_ip = rawData.entry.info_remote_ip || ''
 
 
