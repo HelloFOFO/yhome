@@ -5,6 +5,43 @@ let weiXinSdk = require('node-weixin-media-platform-api')().init(cfg.wx)
 let moment = require('moment')
 
 
+
+let getJsjOrderDetail = function(orderData){
+    let orderInfo = orderData
+    let jsjItemMapping = {
+        "XpjHqw":{
+            "items": "field_1",
+            "contactName": "field_2",
+            "contactMobile": "field_3",
+            "pickupLocation": "field_6",
+        }
+    }
+    // console.log("RAWDATA:",orderData)
+    try{
+        let rawData = JSON.parse(orderData.raw_data)
+        // console.log("RAWDATA PARSED:",rawData)
+        // console.log(jsjItemMapping[orderData.form].items)
+        // console.log(jsjItemMapping[orderData.form].contactName)
+        // console.log(jsjItemMapping[orderData.form].contactMobile)
+        // console.log(jsjItemMapping[orderData.form].pickupLocation)
+
+        orderInfo.orderItems = rawData.entry[jsjItemMapping[orderData.form].items]
+        orderInfo.contactName = rawData.entry[jsjItemMapping[orderData.form].contactName]
+        orderInfo.contactMobile = rawData.entry[jsjItemMapping[orderData.form].contactMobile]
+        orderInfo.pickupLocation = rawData.entry[jsjItemMapping[orderData.form].pickupLocation]
+    }
+    catch (e) {
+        console.log("ERROR PARSE ORDERDATA:", orderData)
+        orderInfo.orderItems = []
+        orderInfo.contactName = ""
+        orderInfo.contactMobile = ""
+        orderInfo.pickupLocation = ""
+    }
+
+
+    return orderInfo
+}
+
 exports.wxAuth = function(req, res, next){
     console.log('begin weixin auth...')
     weiXinSdk.auth(req, res, next)
@@ -24,6 +61,26 @@ exports.yHomeAuth = function(req, res, next){
     if(req.session.openId){
         // console.log(req.session.openId)
         next()
+    }
+    else{
+        console.log('access not from weixin client, go to error...')
+        res.render('unauth', {errMessage: "请从微信客户端访问..."})
+    }
+}
+
+exports.yHomeAdminAuth = function(req, res, next){
+    if(req.session.openId){
+        dbService.get_user_info(req.session.openId, function(results){
+            console.log("RESULSTS", results)
+            if(results && results.openId && results.isAdmin){
+                console.log('admin info:', results)
+                next()
+            }
+            else{
+                console.log('invalid weixin openid')
+                res.render('unauth', {errMessage: "未认证的微信用户，请联系管理员..."})
+            }
+        })
     }
     else{
         console.log('access not from weixin client, go to error...')
@@ -76,7 +133,6 @@ exports.jsjOnlineOrderFeedback = function(req, res){
 exports.renderMyOnlineOrders = function(req, res){
     let openId = req.session.openId
     dbService.getMyOnlineOrders(openId, function(data){
-
         if(data){
             let orders = []
 
@@ -118,38 +174,39 @@ exports.renderOnlineOrder = function(req, res){
     })
 }
 
-let getJsjOrderDetail = function(orderData){
-    let orderInfo = orderData
-    let jsjItemMapping = {
-        "XpjHqw":{
-            "items": "field_1",
-            "contactName": "field_2",
-            "contactMobile": "field_3",
-            "pickupLocation": "field_6",
+
+
+// 管理相关的请求放在下面
+exports.renderAdminOnlineOrders = function(req, res){
+    res.render('admin/mOnlineOrders')
+}
+
+exports.getAdminOrders = function(req, res){
+    let page     = req.query.page||1;//默认从第一页开始查询
+    let pageSize = parseInt(req.query.pageSize)||5;//TODO:把这个配置到conf文件中，现在写死为10
+    let mobile = req.query.mobile
+    let genCode = req.query.genCode
+
+    let param = {
+        "page": page,
+        "pageSize": pageSize,
+        "mobile": mobile,
+        "genCode": genCode
+    }
+
+    dbService.getAdminOnlineOrders(param, function(error, results){
+        if (error) {
+            res.json({error: "DB_ERROR", errorMsg: error});
+        } else {
+            let orders = []
+
+            for(let i=0; i<results.orders.length; i++){
+                let orderInfo = getJsjOrderDetail(results.orders[i])
+                delete orderInfo.raw_data
+                orders.push(orderInfo)
+            }
+
+            res.json({error: 200, errorMsg: "", data: orders,page:page,totalPage:Math.ceil(parseFloat(results.ordersCount)/pageSize),totalRecords:results.ordersCount});
         }
-    }
-    // console.log("RAWDATA:",orderData)
-    try{
-        let rawData = JSON.parse(orderData.raw_data)
-        // console.log("RAWDATA PARSED:",rawData)
-        // console.log(jsjItemMapping[orderData.form].items)
-        // console.log(jsjItemMapping[orderData.form].contactName)
-        // console.log(jsjItemMapping[orderData.form].contactMobile)
-        // console.log(jsjItemMapping[orderData.form].pickupLocation)
-
-        orderInfo.orderItems = rawData.entry[jsjItemMapping[orderData.form].items]
-        orderInfo.contactName = rawData.entry[jsjItemMapping[orderData.form].contactName]
-        orderInfo.contactMobile = rawData.entry[jsjItemMapping[orderData.form].contactMobile]
-        orderInfo.pickupLocation = rawData.entry[jsjItemMapping[orderData.form].pickupLocation]
-    }
-    catch (e) {
-        console.log("ERROR PARSE ORDERDATA:", orderData)
-        orderInfo.orderItems = []
-        orderInfo.contactName = ""
-        orderInfo.contactMobile = ""
-        orderInfo.pickupLocation = ""
-    }
-
-
-    return orderInfo
+    })
 }

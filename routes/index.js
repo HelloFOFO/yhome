@@ -10,4 +10,8 @@ router.get('/onlinemarket/jsj/feedback', webAction.wxAuth, webAction.jsjOnlineOr
 router.get('/onlinemarket/myorders', webAction.wxAuth, webAction.yHomeAuth, webAction.renderMyOnlineOrders)
 router.get('/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAuth, webAction.renderOnlineOrder)
 
+
+router.get('/admin/onlinemarket/orderlist', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrders)
+router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminOrders)
+
 module.exports = router;

@@ -32,4 +32,5 @@ UPDATE form_jsj SET x_field_weixin_openid = 'ov9cf6XrBks4TQkR_8PUwRg9fPpY';
 UPDATE form_jsj SET x_field_weixin_openid = 'oQgUH6-9I7EmL_zne_D8_8PveRv0';
 
 
-SELECT * FROM form_jsj ORDER BY id DESC LIMIT 10;
+SELECT COUNT(*) FROM form_jsj WHERE form_type = 'ONLINEORDER';
+SELECT * FROM form_jsj WHERE form_type = 'ONLINEORDER' ORDER BY id DESC LIMIT 10;

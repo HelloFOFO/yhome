@@ -1,0 +1,196 @@
+<%include ../mHeader%>
+
+<link href="/css/pages/adminMOnlineOrder.css" rel="stylesheet" media="screen">
+
+<div class="div_head">
+    <span id="span_title">线上订单列表</span>
+</div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 margin-top-10">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputMobile" class="col-xs-3 control-label text-right">手机号</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" id="inputMobile">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputGenCode" class="col-xs-3 control-label text-right">确认码</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" id="inputGenCode">
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <button id="btn_search" type="button" class="btn btn-primary">&nbsp;&nbsp;查&nbsp;&nbsp;询&nbsp;&nbsp;</button>
+            </div>
+        </div>
+
+        <div class="div_sec">
+            <div class="div_sec_head">查询结果，共<span id="spanOrderCount" class="myfont-order-count">0</span>条订单</div>
+            <div class="row">
+                <div class="col-xs-12">
+                <div id="results-body" class="margin-top-10">
+
+                    <div class="div-search-result">
+
+                    </div>
+                    <div id="results-page" class="text-center">
+                        <ul class="pagination bootpag">
+                        </ul>
+                    </div>
+                    <div id="page-info" style="text-align: center; ">显示 <span class="page"></span>/<span class="totalPage"></span> 页</div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/assets/plugins/handlebars/handlebars.js"></script>
+<script src="/assets/plugins/bootstrap-paginator/build/bootstrap-paginator.min.js"></script>
+
+
+<script type="text/x-handlebars-template" id="orderListTemplate">
+    {{#each data}}
+    <div id="{{this.id}}" class="list-order-item">
+        <div class="col-xs-4 div_sec_key">确认码</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px; color:red;">{{ this.gen_code}}</span>
+        </div>
+
+        <div class="col-xs-4 div_sec_key">预订时间</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px;">{{moment this.created_at 'YYYY-MM-DD HH:mm:ss'}}</span>
+        </div>
+
+        <div class="col-xs-4 div_sec_key">联系信息</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px;">{{ this.contactName}};{{ this.contactMobile}}</span>
+        </div>
+
+        <div class="col-xs-4 div_sec_key">提货地址</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px;">{{ this.pickupLocation}}</span>
+        </div>
+
+        <div class="col-xs-4 div_sec_key">支付金额</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px;">{{ this.total_price}}&nbsp;元</span>
+        </div>
+
+        <div class="col-xs-4 div_sec_key">支付状态</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style='margin-left: 5px; font-size: 14px; color: {{getOrderStatusClass this.trade_status}}'>{{ getOrderStatusDesc this.trade_status}}</span>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    {{/each}}
+</script>
+
+<script>
+    <!--额外的一些JavaScript放在这儿-->
+
+    Handlebars.registerHelper('moment', function (orderdate, format) {
+        let formatStr = format || 'YYYY-MM-DD';
+        // return orderdate
+        return new Handlebars.SafeString(moment(orderdate).format(formatStr));
+    });
+    Handlebars.registerHelper('getOrderStatusDesc', function (orderStatus) {
+        return orderStatus == 'SUCCESS' ? "支付成功":"支付失败"
+    });
+    Handlebars.registerHelper('getOrderStatusClass', function (orderStatus) {
+        return orderStatus == 'SUCCESS' ? "blue":"red"
+    });
+
+    function Search() {
+        //私有变量----搜索的各种条件
+        let searchParams={};
+        //私有方法----刷新数据 newFilter参数用来控制是否刷新分页控件,排序是不改变分页控件的!所以排序的时候传false,其他都传true
+        let refresh = function(newFilter){
+            if(newFilter) searchParams.page = 1;
+            $.ajax({
+                url:'/admin/ajax/onlinemarket/orders',
+                method:'GET',
+                data:searchParams
+            }).done(function(data){
+                let source   = $("#orderListTemplate").html();
+                let template = Handlebars.compile(source);
+                let html    = template(data);
+                $('#results-body .div-search-result').html(html);
+                if(newFilter){
+                    //如果是新的filter条件则需要重新刷新分页栏,因为页面已经刷新过了,就暂不刷新了
+                    if(data['totalRecords']){
+                        $('#results-page .pagination').bootstrapPaginator({
+                            bootstrapMajorVersion:3,
+                            currentPage: data['page'],
+                            totalPages:  data['totalPage'],
+                            onPageChanged:function(event, oldPage, newPage){
+                                searchParams.page = newPage;//分页的信息只有这个入口可以改变,不存在public方法可以强制设置
+                                $('#page-info .page').html(newPage);
+                                refresh(false);
+                            }
+                        });
+                    }
+                    else{
+                        $('#results-page .pagination').empty();
+                    }
+
+                    //刷新页面最下方的分页信息,以及刷新上面的为你找到多少订单
+                    $('#page-info .totalPage').html(data.totalPage||0);
+                    $('#page-info .page').html(data.page||0);
+                    $('#spanOrderCount').html(data.totalRecords||0)
+                }
+            });
+        };
+        return {
+            setMobile:function(mobile){
+                if(mobile==''){
+                    delete searchParams.mobile;
+                }else{
+                    searchParams.mobile = mobile;
+                }
+            },
+            setGenCode:function(genCode){
+                if(genCode==''){
+                    delete searchParams.genCode;
+                }else{
+                    searchParams.genCode = genCode;
+                }
+            },
+            refresh:refresh //因为初始化的时候需要刷新一下,所以把这个方法暴露一下
+        }
+
+    };
+
+    function initMe(){
+        // alert(1)
+        let search = Search();
+
+        $('#btn_search').click(function(e){
+            search.setMobile($('#inputMobile').val().trim())
+            search.setGenCode($('#inputGenCode').val().trim())
+            search.refresh(true)
+            e.preventDefault();
+        });
+
+        //界面初始化的时候刷新一次,只运行一次
+        search.refresh(true);
+    }
+
+    $(document).ready(function() {
+        initMe();
+    });
+
+</script>
+
+<%include ../mFooter%>
+

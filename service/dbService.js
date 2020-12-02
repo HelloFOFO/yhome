@@ -1,8 +1,9 @@
-var pool        = require('./../libs/dbpool');
-var async       = require('async');
+let pool        = require('./../libs/dbpool');
+let async       = require('async');
+let _           = require('underscore');
 
 //只有接口里会用到的函数，为了写sql方便，不用拼字符串
-var heredoc = function(fn) {
+let heredoc = function(fn) {
     return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
 };
 
@@ -44,6 +45,15 @@ var heredoc = function(fn) {
 //         }
 //     );
 // }
+
+exports.get_user_info = function(openId, cb){
+    let userInfo = {
+        "openId": openId,
+        "isAdmin": true
+    }
+    //TODO: 增加数据库验证用户信息
+    cb(userInfo)
+}
 
 // 用于接收金数据的表单信息
 exports.insertJSJ = function(formType, rawData, cb){
@@ -288,4 +298,101 @@ exports.getMyOnlineOrders = function(openId, cb){
             }
         }
     );
+}
+
+
+
+// 管理相关的操作都在这个下面
+exports.getAdminOnlineOrders = function(param, cb){
+
+    async.auto({
+        paramCheck:function(cb){
+            //TODO:参数检查
+            cb(null,null);
+        },
+        ordersCount:['paramCheck',function(cb,dummy){
+            //由于要分页，先得算算总数
+            pool.getReadOnlyConnection(function (error, conn) {
+                if(error){
+                    console.log("ERROR_DB_CONNECT:", error)
+                    cb("error_db_connect", null);
+                }else{
+                    let sql = heredoc(function () {/*
+                         SELECT COUNT(1) AS count
+                         FROM   form_jsj
+                         __WHERE_CLAUSE__
+                     */});
+                    let sqlParams = [  ];
+                    //where条件后续添加
+                    let whereClause = ' WHERE form_type = \'ONLINEORDER\'';
+                    if(param.genCode)    {whereClause+=' and gen_code=?';     sqlParams.push(param.genCode)}
+                    if(param.mobile)    { whereClause +=' and raw_data LIKE \'%'+param.mobile+'%\''}
+
+                    //最终将whereClause拼接上去
+                    sql = sql.replace(/__WHERE_CLAUSE__/g,whereClause);
+                    conn.query(sql, sqlParams, function (error, rows) {
+                        conn.release();
+                        if (error){
+                            console.log("ERROR_DB_QUERY:", error)
+                            cb("error_db_query", null);
+                        }else if(_.isEmpty(rows)){
+                            cb("没有找到订单", null);
+                        }else{
+                            cb(null,rows[0]['count']);
+                        }
+                    });
+                }
+            });
+        }],
+        orders:['paramCheck',function(cb,dummy){
+            //获取学校列表基础信息
+            pool.getReadOnlyConnection(function (error, conn) {
+                if(error){
+                    console.log("ERROR_DB_CONNECT:", error)
+                    cb("error_db_connect", null);
+                }else{
+                    let sql = heredoc(function () {/*
+                             SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                             FROM   form_jsj
+                             __WHERE_CLAUSE__
+                             ORDER BY ID DESC
+                             limit ?,?
+                     */});
+                    var sqlParams = [   ];//where条件后续添加
+
+                    //where条件后续添加
+                    let whereClause = ' WHERE form_type = \'ONLINEORDER\'';
+                    if(param.genCode)    { whereClause +=' and gen_code=?';     sqlParams.push(param.genCode)}
+                    if(param.mobile)    { whereClause +=' and raw_data LIKE \'%'+param.mobile+'%\''}
+
+                    sqlParams = sqlParams.concat([ (param.page-1)*param.pageSize , param.pageSize]);
+
+                    //最终将whereClause拼接上去
+                    sql = sql.replace(/__WHERE_CLAUSE__/g,whereClause);
+                    // console.log(sql);
+                    conn.query(sql, sqlParams, function (error, rows) {
+                        conn.release();
+                        if (error){
+                            console.log("ERROR_DB_QUERY:", error)
+                            cb("error_db_query", null);
+                        }else if(rows.length==0){
+                            cb("没有找到订单", null);
+                        } else{
+                            cb(null, rows||[]);
+                        }
+                    });
+                }
+            });
+        }]
+    },function(error,results){
+        cb(error, results)
+        // if (error) {
+        //     cb({error: "DB_ERROR", errorMsg: "数据库操作异常"});
+        // } else {
+        //     cb({error: 200, errorMsg: "", data: results.orders,page:param.page,totalPage:Math.ceil(parseFloat(results.ordersCount)/param.pageSize),totalRecords:results.ordersCount});
+        // }
+    });
 }
