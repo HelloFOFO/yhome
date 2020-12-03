@@ -13,5 +13,7 @@ router.get('/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAuth, web
 
 router.get('/admin/onlinemarket/orderlist', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrders)
 router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminOrders)
+router.get('/admin/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrder)
+router.post('/admin/ajax/onlinemarket/orderupdate', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.orderUpdate)
 
 module.exports = router;

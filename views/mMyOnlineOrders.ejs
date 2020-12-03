@@ -20,6 +20,11 @@
                     <span style="margin-left: 5px; font-size: 14px;"><%= moment(order.created_at).format('YYYY-MM-DD HH:mm:ss')%></span>
                 </div>
 
+                <div class="col-xs-4 div_sec_key">订单状态</div>
+                <div class="col-xs-8 div_sec_value">
+                    <span style="margin-left: 5px; font-size: 14px;"><%= order.orderStatusDesc%></span>
+                </div>
+
                 <div class="col-xs-4 div_sec_key">联系信息</div>
                 <div class="col-xs-8 div_sec_value">
                     <span style="margin-left: 5px; font-size: 14px;"><%= order.contactName%>;<%= order.contactMobile%></span>

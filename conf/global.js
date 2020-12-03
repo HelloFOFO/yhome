@@ -1,8 +1,8 @@
 
-var debug = require('./.debug');
+let debug = require('./.debug');
 
 //数据库配置
-var db = {};
+let db = {};
 if(debug){
     //非生产环境
     db.slaveHost = process.env.db_slaveHost||'106.14.10.98';
@@ -19,7 +19,7 @@ if(debug){
     db.database  = 'yhome';
 }
 
-var wx = {}
+let wx = {}
 if(debug){
     wx = {
         appId: "wxf6e1ef44ca9690de",

@@ -212,7 +212,7 @@ exports.getOnlineOrderInfo = function(orderId, cb){
                         cb1("error_db_connect", null);
                     } else {
                         let sql = heredoc(function () {/*
-                         SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                         SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
                                ,payment_method,gen_code
                                ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
                                ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
@@ -264,7 +264,7 @@ exports.getMyOnlineOrders = function(openId, cb){
                         cb1("error_db_connect", null);
                     } else {
                         let sql = heredoc(function () {/*
-                         SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                         SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
                                ,payment_method,gen_code
                                ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
                                ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
@@ -352,7 +352,7 @@ exports.getAdminOnlineOrders = function(param, cb){
                     cb("error_db_connect", null);
                 }else{
                     let sql = heredoc(function () {/*
-                             SELECT id,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                             SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
                                ,payment_method,gen_code
                                ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
                                ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
@@ -395,4 +395,89 @@ exports.getAdminOnlineOrders = function(param, cb){
         //     cb({error: 200, errorMsg: "", data: results.orders,page:param.page,totalPage:Math.ceil(parseFloat(results.ordersCount)/param.pageSize),totalRecords:results.ordersCount});
         // }
     });
+}
+
+exports.updateOnlineOrder = function(orderInfo, cb){
+    let sql = "";
+    let sqlParam = [];
+    let id = parseInt(orderInfo.id); //
+    if(id){
+        async.auto({
+                checkExists: function (cb1) {
+                    var bExists = false;
+                    sql = "SELECT id FROM form_jsj WHERE id = ? AND form_type = 'ONLINEORDER'";
+                    sqlParam.push(id);
+                    pool.getReadOnlyConnection(function(error,conn) {
+                        if (error) {
+                            console.log("db connect error");
+                            cb1("error_db_connect", bExists);
+                        }
+                        else {
+                            conn.query( sql, sqlParam , function(err,rows){
+                                conn.release();
+                                if(err){
+                                    console.log("db query error");
+                                    console.log(sql);
+                                    cb1("error_db_query",bExists);
+                                }
+                                else{
+                                    bExists = (rows.length == 1);
+                                    cb1(null,bExists);
+                                }
+                            });
+                        }
+                    });
+                },
+                doUpdate: ['checkExists', function (cb2, results) {
+                    pool.getReadOnlyConnection(function(error,conn) {
+                        if (error) {
+                            console.log("db connect error");
+                            cb2("error_db_connect", null);
+                        }
+                        else {
+                            if(!results.checkExists){
+                                cb2("要更新的订单不存在",null);
+                                console.log(schoolId);
+                            }
+                            else{
+                                //先清空之前的参数
+                                sqlParam.splice(0,sqlParam.length);
+                                sql = "UPDATE form_jsj SET sys_update_dt = CURRENT_TIMESTAMP() ";
+
+                                let order_status = orderInfo.order_status; if(order_status){sql += ",order_status = ?";sqlParam.push(order_status)};
+
+                                sql += " WHERE id = ? AND form_type = 'ONLINEORDER'";
+                                sqlParam.push(id);
+
+                                conn.query( sql,sqlParam, function(err,rows){
+                                    conn.release();
+//                                    console.log(sql);
+//                                    console.log(sqlParam);
+                                    if(err){
+                                        console.log("db query error");
+                                        console.log(sql);
+                                        cb2("error_db_query",null);
+                                    }
+                                    else{
+                                        cb2(null,null);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }]
+            },function(err,results){
+                if(err){
+                    cb({"errorCode":-1,"errorMsg":'更新订单信息失败'});
+                    console.log("更新订单信息失败，信息如下：", err);
+                }
+                else{
+                    cb({"errorCode":200,"errorMsg":'更新订单信息成功'});
+                }
+            }
+        );
+    }
+    else{
+        cb({"errorCode":-1,"errorMsg":'订单I参数不正确'});
+    }
 }

@@ -28,9 +28,16 @@ sys_update_dt timestamp ON UPDATE CURRENT_TIMESTAMP
 
 ALTER TABLE form_jsj ADD form_type varchar(20) AFTER id;
 
+-- INIT：新提交
+-- RETURN： 已退款
+-- PICKED： 已提货
+ALTER TABLE form_jsj DROP COLUMN order_status;
+ALTER TABLE form_jsj ADD order_status varchar(10) DEFAULT 'INIT' AFTER id ;  
+
 UPDATE form_jsj SET x_field_weixin_openid = 'ov9cf6XrBks4TQkR_8PUwRg9fPpY';
 UPDATE form_jsj SET x_field_weixin_openid = 'oQgUH6-9I7EmL_zne_D8_8PveRv0';
 
 
 SELECT COUNT(*) FROM form_jsj WHERE form_type = 'ONLINEORDER';
 SELECT * FROM form_jsj WHERE form_type = 'ONLINEORDER' ORDER BY id DESC LIMIT 10;
+SELECT * FROM form_jsj WHERE form_type = 'ONLINEORDER' ORDER BY id DESC;

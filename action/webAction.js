@@ -1,6 +1,7 @@
 let dbService = require('./../service/dbService')
 let async = require('async')
 let cfg = require('./../conf/global')
+let yhomeCfg = require('./../conf/yhomeCfg')
 let weiXinSdk = require('node-weixin-media-platform-api')().init(cfg.wx)
 let moment = require('moment')
 
@@ -8,14 +9,7 @@ let moment = require('moment')
 
 let getJsjOrderDetail = function(orderData){
     let orderInfo = orderData
-    let jsjItemMapping = {
-        "XpjHqw":{
-            "items": "field_1",
-            "contactName": "field_2",
-            "contactMobile": "field_3",
-            "pickupLocation": "field_6",
-        }
-    }
+
     // console.log("RAWDATA:",orderData)
     try{
         let rawData = JSON.parse(orderData.raw_data)
@@ -25,10 +19,10 @@ let getJsjOrderDetail = function(orderData){
         // console.log(jsjItemMapping[orderData.form].contactMobile)
         // console.log(jsjItemMapping[orderData.form].pickupLocation)
 
-        orderInfo.orderItems = rawData.entry[jsjItemMapping[orderData.form].items]
-        orderInfo.contactName = rawData.entry[jsjItemMapping[orderData.form].contactName]
-        orderInfo.contactMobile = rawData.entry[jsjItemMapping[orderData.form].contactMobile]
-        orderInfo.pickupLocation = rawData.entry[jsjItemMapping[orderData.form].pickupLocation]
+        orderInfo.orderItems = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].items]
+        orderInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactName]
+        orderInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactMobile]
+        orderInfo.pickupLocation = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].pickupLocation]
     }
     catch (e) {
         console.log("ERROR PARSE ORDERDATA:", orderData)
@@ -37,6 +31,8 @@ let getJsjOrderDetail = function(orderData){
         orderInfo.contactMobile = ""
         orderInfo.pickupLocation = ""
     }
+    // 订单状态中文
+    orderInfo.orderStatusDesc = yhomeCfg.mapOrderStatus[orderData.order_status] || "未知"
 
 
     return orderInfo
@@ -209,4 +205,40 @@ exports.getAdminOrders = function(req, res){
             res.json({error: 200, errorMsg: "", data: orders,page:page,totalPage:Math.ceil(parseFloat(results.ordersCount)/pageSize),totalRecords:results.ordersCount});
         }
     })
+}
+
+
+exports.renderAdminOnlineOrder = function(req, res){
+    let orderId = req.params.id
+    // res.send("订单详情页:"+orderId.toString())
+
+    dbService.getOnlineOrderInfo(orderId, function(data){
+        if(data){
+            // 这儿需要对raw_data里的field开头的内容进行处理，翻译成具体的字段名称；
+            // 这样前端就不需要改动了
+
+            let orderInfo = getJsjOrderDetail(data)
+            // console.log("ORDERINFO PARSED:", orderInfo)
+
+            // 最后删掉不需要的属性
+            delete orderInfo.raw_data
+
+            res.render('admin/mOnlineOrder', orderInfo)
+        }
+        else{
+            res.render('yError',{title:"系统异常", message:"没找到对应的订单信息~"})
+        }
+    })
+}
+
+exports.orderUpdate = function(req, res){
+    let orderInfo = req.body
+    if(parseInt(orderInfo.id)){
+        dbService.updateOnlineOrder(orderInfo,function(err){
+            res.json(err);
+        })
+    }
+    else{
+        res.json({"errorCode":-1,"errorMsg":"更新订单状态时传入的参数不对"});
+    }
 }

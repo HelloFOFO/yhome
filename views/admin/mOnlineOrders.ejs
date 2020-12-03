@@ -60,10 +60,15 @@
 
 <script type="text/x-handlebars-template" id="orderListTemplate">
     {{#each data}}
-    <div id="{{this.id}}" class="list-order-item">
+    <a href="order/{{this.id}}">
+    <div id="div_order_{{this.id}}" class="list-order-item">
         <div class="col-xs-4 div_sec_key">确认码</div>
         <div class="col-xs-8 div_sec_value">
             <span style="margin-left: 5px; font-size: 14px; color:red;">{{ this.gen_code}}</span>
+        </div>
+        <div class="col-xs-4 div_sec_key">订单状态</div>
+        <div class="col-xs-8 div_sec_value">
+            <span style="margin-left: 5px; font-size: 14px;">{{ this.orderStatusDesc}}</span>
         </div>
 
         <div class="col-xs-4 div_sec_key">预订时间</div>
@@ -93,6 +98,7 @@
 
         <div class="clearfix"></div>
     </div>
+    </a>
     {{/each}}
 </script>
 
