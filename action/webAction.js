@@ -87,6 +87,8 @@ exports.yHomeAdminAuth = function(req, res, next){
 exports.insertJSJ = function(req, res){
     let formType = req.query.form_type || ''
     let rawData = req.body
+    console.log(formType)
+    // console.log(JSON.stringify(rawData))
     dbService.insertJSJ(formType, rawData, function(err){
         if(err) {
             console.log(err)
