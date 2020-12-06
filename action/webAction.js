@@ -319,7 +319,7 @@ exports.renderAdminXmasActivityItems = function(req, res){
 
 exports.getAdminXmasActivityItems = function(req, res){
     let page     = req.query.page||1;//默认从第一页开始查询
-    let pageSize = parseInt(req.query.pageSize)||2;//TODO:把这个配置到conf文件中，现在写死为10
+    let pageSize = parseInt(req.query.pageSize)||5;//TODO:把这个配置到conf文件中，现在写死为10
     let mobile = req.query.mobile
     let genCode = req.query.genCode
 
