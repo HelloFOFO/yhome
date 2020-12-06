@@ -11,6 +11,9 @@ router.get('/onlinemarket/myorders', webAction.wxAuth, webAction.yHomeAuth, webA
 router.get('/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAuth, webAction.renderOnlineOrder)
 
 
+router.get('/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAuth, webAction.renderXmasActivityItems)
+router.get('/ajax/exchange/xmasActivityItems', webAction.getXmasActivityItems)
+
 router.get('/admin/onlinemarket/orderlist', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrders)
 router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminOrders)
 router.get('/admin/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrder)

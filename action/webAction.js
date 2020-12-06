@@ -5,6 +5,25 @@ let yhomeCfg = require('./../conf/yhomeCfg')
 let weiXinSdk = require('node-weixin-media-platform-api')().init(cfg.wx)
 let moment = require('moment')
 
+let getJsjXmasExchangeItemDetail = function(itemData){
+    let itemInfo = itemData
+
+    // console.log("RAWDATA:",itemData)
+    try{
+        let rawData = JSON.parse(itemData.raw_data)
+        itemInfo.itemName = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].itemName]
+        itemInfo.itemPicUrl = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].itemPicUrl]
+    }
+    catch (e) {
+        console.log("ERROR PARSE ORDERDATA:", itemData)
+        console.log(e)
+        itemInfo.itemName = ""
+        itemInfo.itemPicUrl = ""
+    }
+
+    return itemInfo
+
+}
 
 
 let getJsjOrderDetail = function(orderData){
@@ -172,9 +191,32 @@ exports.renderOnlineOrder = function(req, res){
     })
 }
 
+exports.renderXmasActivityItems = function(req, res){
+    res.render('xmasActivityItems')
+}
 
+exports.getXmasActivityItems = function(req, res){
+    // minId为页面列表中当前显示的最小的id，后端需要取比这个小的 pageSize 个
+    let minId = parseInt(req.query.min_id) || -1
+    let pageSize = parseInt(req.query.page_size) || 5
+    let items = []
+    // console.log("minId",minId)
+    // console.log("pageSize",pageSize)
+    dbService.getXmasActivityItems(minId, pageSize, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjXmasExchangeItemDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        res.json({"items":items})
+    })
+}
 
-// 管理相关的请求放在下面
+// ********************************************************
+//                管理相关的请求放在下面
+// ********************************************************
 exports.renderAdminOnlineOrders = function(req, res){
     res.render('admin/mOnlineOrders')
 }
@@ -244,3 +286,4 @@ exports.orderUpdate = function(req, res){
         res.json({"errorCode":-1,"errorMsg":"更新订单状态时传入的参数不对"});
     }
 }
+

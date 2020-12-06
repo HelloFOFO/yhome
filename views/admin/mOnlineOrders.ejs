@@ -130,7 +130,7 @@
             }).done(function(data){
                 let source   = $("#orderListTemplate").html();
                 let template = Handlebars.compile(source);
-                let html    = template(data);
+                let html     = template(data);
                 $('#results-body .div-search-result').html(html);
                 if(newFilter){
                     //如果是新的filter条件则需要重新刷新分页栏,因为页面已经刷新过了,就暂不刷新了

@@ -42,5 +42,5 @@ SELECT COUNT(*) FROM form_jsj WHERE form_type = 'ONLINEORDER';
 SELECT * FROM form_jsj WHERE form_type = 'ONLINEORDER' ORDER BY id DESC LIMIT 10;
 SELECT * FROM form_jsj WHERE form_type = 'ONLINEORDER' ORDER BY id DESC;
 
-
+SELECT * FROM form_jsj LIMIT 10 ;
 -- TRUNCATE TABLE form_jsj;

@@ -12,6 +12,10 @@ let jsjItemMapping = {
         "contactName": "field_2",
         "contactMobile": "field_3",
         "pickupLocation": "field_6",
+    },
+    "X72F7t":{
+        "itemName":"field_2",
+        "itemPicUrl":"field_1"
     }
 }
 

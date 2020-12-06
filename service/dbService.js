@@ -75,8 +75,8 @@ exports.insertJSJ = function(formType, rawData, cb){
         let x_field_weixin_headimgurl = rawData.entry.x_field_weixin_headimgurl || ''
         let x_field_weixin_nickname = rawData.entry.x_field_weixin_nickname || ''
         let x_field_weixin_gender = rawData.entry.x_field_weixin_gender || ''
-        let x_field_weixin_province = rawData.entry.x_field_weixin_province_city.province || ''
-        let x_field_weixin_city = rawData.entry.x_field_weixin_province_city.city || ''
+        let x_field_weixin_province = rawData.entry.x_field_weixin_province_city ? rawData.entry.x_field_weixin_province_city.province || '': ''
+        let x_field_weixin_city = rawData.entry.x_field_weixin_province_city ? rawData.entry.x_field_weixin_province_city.city || '': ''
         let creator_name = rawData.entry.creator_name || ''
         let created_at = rawData.entry.created_at ? moment(rawData.entry.created_at).format('YYYY-MM-DD HH:mm:ss.SSS') : null
         let updated_at = rawData.entry.updated_at ? moment(rawData.entry.updated_at).format('YYYY-MM-DD HH:mm:ss.SSS') : null
@@ -309,6 +309,64 @@ exports.getMyOnlineOrders = function(openId, cb){
 }
 
 
+// 获取圣诞礼遇活动用户提交的物品列表
+exports.getXmasActivityItems = function(minId, pageSize, cb){
+    async.auto({
+            items:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                         FROM form_jsj
+                         __WHERE_CLAUSE__
+                         ORDER  BY id DESC
+                         LIMIT  ?;
+                         */});
+
+                        let sqlParams = []
+
+                        //where条件后续添加
+                        let whereClause = 'WHERE form_type = \'EXCHANGE_1\'';
+                        if(minId != -1)    { whereClause +=' and id < ?';     sqlParams.push(minId)}
+
+                        sqlParams = sqlParams.concat([pageSize]);
+
+                        // console.log("SQL PARAMS:", sqlParams)
+
+                        //最终将whereClause拼接上去
+                        sql = sql.replace(/__WHERE_CLAUSE__/g,whereClause);
+                        // console.log(sql)
+                        conn.query(sql, sqlParams, function (error, result) {
+                            conn.release();
+                            if (error) {
+                                console.log("ERROR_DB_QUERY:", error)
+                                cb1("error_db_query", null);
+                            } else {
+                                cb1(null, result);
+                            }
+                        });
+                    }
+                });
+            }
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb(null);
+            } else {
+                // console.log("RESULTS:", results)
+                cb(results.items);
+            }
+        }
+    );
+}
+
+
 
 // 管理相关的操作都在这个下面
 exports.getAdminOnlineOrders = function(param, cb){
@@ -369,7 +427,7 @@ exports.getAdminOnlineOrders = function(param, cb){
                              ORDER BY ID DESC
                              limit ?,?
                      */});
-                    var sqlParams = [   ];//where条件后续添加
+                    let sqlParams = [   ];//where条件后续添加
 
                     //where条件后续添加
                     let whereClause = ' WHERE form_type = \'ONLINEORDER\'';
