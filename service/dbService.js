@@ -261,6 +261,59 @@ exports.getOnlineOrderInfo = function(orderId, cb){
     );
 }
 
+
+// 根据ID获取圣诞礼遇物品信息
+exports.getAdminXmasActivityItemInfo = function(itemId, cb){
+    console.log("QUERY_ItemID: ", itemId)
+    async.auto({
+            order:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                         FROM   form_jsj
+                         WHERE  form_type = 'EXCHANGE_1' AND id = ?
+                         */});
+
+                        let sqlParam = []
+                        sqlParam.push(itemId)
+
+                        conn.query(sql, sqlParam, function (error, result) {
+                            conn.release();
+                            if (error) {
+                                console.log("ERROR_DB_QUERY:", error)
+                                cb1("error_db_query", null);
+                            } else {
+                                // console.log("DB_RESULTS:", result)
+                                if( result.length == 1){
+                                    cb1(null, result[0]);
+                                }
+                                else{
+                                    cb1("more than one row found", null);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb(null);
+            } else {
+                // console.log("RESULTS:", results)
+                cb(results.order);
+            }
+        }
+    );
+}
+
 // 获取我的在线订单列表
 exports.getMyOnlineOrders = function(openId, cb){
     console.log("QUERY_OpenID: ", openId)
@@ -419,8 +472,11 @@ exports.getMyXmasActivityItems = function(openId, cb){
 }
 
 
+// *******************************************
+//         管理相关的操作都在下面
+// *******************************************
 
-// 管理相关的操作都在这个下面
+// 管理员获取在线订单列表
 exports.getAdminOnlineOrders = function(param, cb){
 
     async.auto({
@@ -515,6 +571,7 @@ exports.getAdminOnlineOrders = function(param, cb){
     });
 }
 
+// 更新在线订单状态
 exports.updateOnlineOrder = function(orderInfo, cb){
     let sql = "";
     let sqlParam = [];
@@ -596,6 +653,187 @@ exports.updateOnlineOrder = function(orderInfo, cb){
         );
     }
     else{
-        cb({"errorCode":-1,"errorMsg":'订单I参数不正确'});
+        cb({"errorCode":-1,"errorMsg":'订单参数不正确'});
+    }
+}
+
+// 管理员获取圣诞礼遇物品列表
+exports.getAdminXmasActivityItems = function(param, cb){
+    async.auto({
+        paramCheck:function(cb){
+            //TODO:参数检查
+            cb(null,null);
+        },
+        itemsCount:['paramCheck',function(cb,dummy){
+            //由于要分页，先得算算总数
+            pool.getReadOnlyConnection(function (error, conn) {
+                if(error){
+                    console.log("ERROR_DB_CONNECT:", error)
+                    cb("error_db_connect", null);
+                }else{
+                    let sql = heredoc(function () {/*
+                         SELECT COUNT(1) AS count
+                         FROM   form_jsj
+                         __WHERE_CLAUSE__
+                     */});
+                    let sqlParams = [  ];
+                    //where条件后续添加
+                    let whereClause = ' WHERE form_type = \'EXCHANGE_1\'';
+                    if(param.genCode)    {whereClause+=' and gen_code=?';     sqlParams.push(param.genCode)}
+                    if(param.mobile)    { whereClause +=' and raw_data LIKE \'%'+param.mobile+'%\''}
+
+
+                    //最终将whereClause拼接上去
+                    sql = sql.replace(/__WHERE_CLAUSE__/g,whereClause);
+                    conn.query(sql, sqlParams, function (error, rows) {
+                        conn.release();
+                        if (error){
+                            console.log("ERROR_DB_QUERY:", error)
+                            cb("error_db_query", null);
+                        }else if(_.isEmpty(rows)){
+                            cb("没有找到物品", null);
+                        }else{
+                            cb(null,rows[0]['count']);
+                        }
+                    });
+                }
+            });
+        }],
+        items:['paramCheck',function(cb,dummy){
+            //获取学校列表基础信息
+            pool.getReadOnlyConnection(function (error, conn) {
+                if(error){
+                    console.log("ERROR_DB_CONNECT:", error)
+                    cb("error_db_connect", null);
+                }else{
+                    let sql = heredoc(function () {/*
+                             SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                             FROM   form_jsj
+                             __WHERE_CLAUSE__
+                             ORDER BY ID DESC
+                             limit ?,?
+                     */});
+                    let sqlParams = [   ];//where条件后续添加
+
+                    //where条件后续添加
+                    let whereClause = ' WHERE form_type = \'EXCHANGE_1\'';
+                    if(param.genCode)    { whereClause +=' and gen_code=?';     sqlParams.push(param.genCode)}
+                    if(param.mobile)    { whereClause +=' and raw_data LIKE \'%'+param.mobile+'%\''}
+
+                    sqlParams = sqlParams.concat([ (param.page-1)*param.pageSize , param.pageSize]);
+
+                    //最终将whereClause拼接上去
+                    sql = sql.replace(/__WHERE_CLAUSE__/g,whereClause);
+                    // console.log(sql);
+                    conn.query(sql, sqlParams, function (error, rows) {
+                        conn.release();
+                        if (error){
+                            console.log("ERROR_DB_QUERY:", error)
+                            cb("error_db_query", null);
+                        }else if(rows.length==0){
+                            cb("没有找到物品", null);
+                        } else{
+                            cb(null, rows||[]);
+                        }
+                    });
+                }
+            });
+        }]
+    },function(error,results){
+        cb(error, results)
+        // if (error) {
+        //     cb({error: "DB_ERROR", errorMsg: "数据库操作异常"});
+        // } else {
+        //     cb({error: 200, errorMsg: "", data: results.orders,page:param.page,totalPage:Math.ceil(parseFloat(results.ordersCount)/param.pageSize),totalRecords:results.ordersCount});
+        // }
+    });
+}
+
+// 更新圣诞礼遇物品状态
+exports.updateXmasActivityItem = function(itemInfo, cb){
+    let sql = "";
+    let sqlParam = [];
+    let id = parseInt(itemInfo.id); //
+    if(id){
+        async.auto({
+                checkExists: function (cb1) {
+                    let bExists = false;
+                    sql = "SELECT id FROM form_jsj WHERE id = ? AND form_type = 'EXCHANGE_1'";
+                    sqlParam.push(id);
+                    pool.getReadOnlyConnection(function(error,conn) {
+                        if (error) {
+                            console.log("db connect error");
+                            cb1("error_db_connect", bExists);
+                        }
+                        else {
+                            conn.query( sql, sqlParam , function(err,rows){
+                                conn.release();
+                                if(err){
+                                    console.log("db query error");
+                                    console.log(sql);
+                                    cb1("error_db_query",bExists);
+                                }
+                                else{
+                                    bExists = (rows.length == 1);
+                                    cb1(null,bExists);
+                                }
+                            });
+                        }
+                    });
+                },
+                doUpdate: ['checkExists', function (cb2, results) {
+                    pool.getReadOnlyConnection(function(error,conn) {
+                        if (error) {
+                            console.log("db connect error");
+                            cb2("error_db_connect", null);
+                        }
+                        else {
+                            if(!results.checkExists){
+                                cb2("要更新的圣诞礼遇物品不存在",null);
+                                console.log(schoolId);
+                            }
+                            else{
+                                //先清空之前的参数
+                                sqlParam.splice(0,sqlParam.length);
+                                sql = "UPDATE form_jsj SET sys_update_dt = CURRENT_TIMESTAMP() ";
+
+                                let order_status = itemInfo.order_status; if(order_status){sql += ",order_status = ?";sqlParam.push(order_status)};
+
+                                sql += " WHERE id = ? AND form_type = 'EXCHANGE_1'";
+                                sqlParam.push(id);
+
+                                conn.query( sql,sqlParam, function(err,rows){
+                                    conn.release();
+//                                    console.log(sql);
+//                                    console.log(sqlParam);
+                                    if(err){
+                                        console.log("db query error");
+                                        console.log(sql);
+                                        cb2("error_db_query",null);
+                                    }
+                                    else{
+                                        cb2(null,null);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }]
+            },function(err,results){
+                if(err){
+                    cb({"errorCode":-1,"errorMsg":'更新圣诞礼遇物品信息失败'});
+                    console.log("更新圣诞礼遇物品信息失败，信息如下：", err);
+                }
+                else{
+                    cb({"errorCode":200,"errorMsg":'更新圣诞礼遇物品信息成功'});
+                }
+            }
+        );
+    }
+    else{
+        cb({"errorCode":-1,"errorMsg":'圣诞礼遇物品参数不正确'});
     }
 }

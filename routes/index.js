@@ -22,4 +22,9 @@ router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeA
 router.get('/admin/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrder)
 router.post('/admin/ajax/onlinemarket/orderupdate', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.orderUpdate)
 
+router.get('/admin/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminXmasActivityItems)
+router.get('/admin/ajax/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminXmasActivityItems)
+router.get('/admin/exchange/xmasActivityItem/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminXmasActivityItem)
+router.post('/admin/ajax/exchange/xmasActivityItemUpdate', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.xmasActivityItemUpdate)
+
 module.exports = router;

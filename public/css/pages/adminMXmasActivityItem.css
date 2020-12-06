@@ -1,0 +1,65 @@
+.myfont-order-count{
+    font-weight:bold;
+    color:red;
+}
+
+
+.div-search-noresult{
+    font-size:22px;
+    color:#888;
+    text-align: center;
+    height: 300px;
+    line-height: 30px;
+    margin-top: 60px;
+}
+
+.div-search-result .list-order-item{
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 2px 2px 5px 2px;
+    padding: 5px 0px;
+}
+
+.span_hide {
+    visibility: hidden;
+}
+
+.span_show {
+    visibility: visible;
+}
+
+.div-item{
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 3px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.div-item .item-name{
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+.div-item .item-img{
+    width: 280px;
+    height: 280px;
+    border-radius: 5px;
+}
+.div-item .item-owner-headimgurl{
+    height: 30px;
+    width: 30px;
+    border-radius: 20px;
+}
+.div-item .item-owner-nickname{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 0px;
+}
+.div-item .item-info{
+    text-align: left;
+    padding-left: 0px;
+}

@@ -5,6 +5,13 @@ let mapOrderStatus = {
     "PICKED":"已提货"
 }
 
+let mapItemStatus = {
+    "INIT":"新提交",
+    "RETURN":"已退回",
+    "CONFIRMED":"待收物品",
+    "GOT":"已收到物品"
+}
+
 
 let jsjItemMapping = {
     "XpjHqw":{
@@ -15,8 +22,10 @@ let jsjItemMapping = {
     },
     "X72F7t":{
         "itemName":"field_2",
-        "itemPicUrl":"field_1"
+        "itemPicUrl":"field_1",
+        "contactName": "field_3",
+        "contactMobile": "field_4"
     }
 }
 
-module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping}
+module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping, mapItemStatus: mapItemStatus}

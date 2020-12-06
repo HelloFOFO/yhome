@@ -13,13 +13,19 @@ let getJsjXmasExchangeItemDetail = function(itemData){
         let rawData = JSON.parse(itemData.raw_data)
         itemInfo.itemName = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].itemName]
         itemInfo.itemPicUrl = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].itemPicUrl]
+        itemInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].contactName]
+        itemInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[itemData.form].contactMobile]
     }
     catch (e) {
         console.log("ERROR PARSE ORDERDATA:", itemData)
         console.log(e)
         itemInfo.itemName = ""
         itemInfo.itemPicUrl = ""
+        itemInfo.contactName = ""
+        itemInfo.contactMobile = ""
     }
+    //物品状态
+    itemInfo.itemStatusDesc = yhomeCfg.mapItemStatus[itemData.order_status] || "未知"
 
     return itemInfo
 
@@ -306,3 +312,70 @@ exports.orderUpdate = function(req, res){
     }
 }
 
+
+exports.renderAdminXmasActivityItems = function(req, res){
+    res.render('admin/mXmasActivityItems')
+}
+
+exports.getAdminXmasActivityItems = function(req, res){
+    let page     = req.query.page||1;//默认从第一页开始查询
+    let pageSize = parseInt(req.query.pageSize)||2;//TODO:把这个配置到conf文件中，现在写死为10
+    let mobile = req.query.mobile
+    let genCode = req.query.genCode
+
+    let param = {
+        "page": page,
+        "pageSize": pageSize,
+        "mobile": mobile,
+        "genCode": genCode
+    }
+
+    dbService.getAdminXmasActivityItems(param, function(error, results){
+        if (error) {
+            res.json({error: "DB_ERROR", errorMsg: error});
+        } else {
+            let items = []
+
+            for(let i=0; i<results.items.length; i++){
+                let item = getJsjXmasExchangeItemDetail(results.items[i])
+                delete item.raw_data
+                items.push(item)
+            }
+
+            res.json({error: 200, errorMsg: "", data: items,page:page,totalPage:Math.ceil(parseFloat(results.itemsCount)/pageSize),totalRecords:results.itemsCount});
+        }
+    })
+}
+
+exports.renderAdminXmasActivityItem = function(req, res){
+    let itemId = req.params.id
+    // console.log("itemID:",JSON.stringify(itemId))
+
+    dbService.getAdminXmasActivityItemInfo(itemId, function(data){
+        if(data){
+            let itemInfo = getJsjXmasExchangeItemDetail(data)
+
+            // 最后删掉不需要的属性
+            delete itemInfo.raw_data
+
+            // console.log(itemInfo)
+            res.render('admin/mXmaxActivityItem', itemInfo)
+        }
+        else{
+            res.render('yError',{title:"s系统异常", message:"没找到对应的交换物品信息~"})
+        }
+    })
+}
+
+// 更新圣诞礼遇物品状态
+exports.xmasActivityItemUpdate = function(req, res){
+    let itemInfo = req.body
+    if(parseInt(itemInfo.id)){
+        dbService.updateXmasActivityItem(itemInfo,function(err){
+            res.json(err);
+        })
+    }
+    else{
+        res.json({"errorCode":-1,"errorMsg":"更新圣诞礼遇物品状态时传入的参数不对"});
+    }
+}
