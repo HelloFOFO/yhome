@@ -195,6 +195,10 @@ exports.renderXmasActivityItems = function(req, res){
     res.render('xmasActivityItems')
 }
 
+exports.renderMyXmasActivityItems = function(req, res){
+    res.render('myXmasActivityItems')
+}
+
 exports.getXmasActivityItems = function(req, res){
     // minId为页面列表中当前显示的最小的id，后端需要取比这个小的 pageSize 个
     let minId = parseInt(req.query.min_id) || -1
@@ -203,6 +207,21 @@ exports.getXmasActivityItems = function(req, res){
     // console.log("minId",minId)
     // console.log("pageSize",pageSize)
     dbService.getXmasActivityItems(minId, pageSize, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjXmasExchangeItemDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        res.json({"items":items})
+    })
+}
+
+exports.getMyXmasActivityItems = function(req, res){
+    let openId = req.session.openId
+    let items = []
+    dbService.getMyXmasActivityItems(openId, function(data){
         if(data){
             for(let i=0; i<data.length; i++){
                 let item = getJsjXmasExchangeItemDetail(data[i])
