@@ -63,6 +63,32 @@ let getJsjOrderDetail = function(orderData){
     return orderInfo
 }
 
+let getJsjBakingActivityDetail = function(enrollData){
+    let enrollInfo = enrollData
+
+    // console.log("RAWDATA:",orderData)
+    try{
+        let rawData = JSON.parse(enrollData.raw_data)
+        // console.log("RAWDATA PARSED:",rawData)
+        // console.log(jsjItemMapping[orderData.form].items)
+        // console.log(jsjItemMapping[orderData.form].contactName)
+        // console.log(jsjItemMapping[orderData.form].contactMobile)
+        // console.log(jsjItemMapping[orderData.form].pickupLocation)
+
+        enrollInfo.enrollItems = rawData.entry[yhomeCfg.jsjItemMapping[enrollData.form].items]
+        enrollInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[enrollData.form].contactName]
+        enrollInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[enrollData.form].contactMobile]
+    }
+    catch (e) {
+        console.log("ERROR PARSE ORDERDATA:", enrollData)
+        enrollInfo.enrollItems = []
+        enrollInfo.contactName = ""
+        enrollInfo.contactMobile = ""
+    }
+
+    return enrollInfo
+}
+
 exports.wxAuth = function(req, res, next){
     console.log('begin weixin auth...')
     weiXinSdk.auth(req, res, next)
@@ -362,7 +388,7 @@ exports.renderAdminXmasActivityItem = function(req, res){
             res.render('admin/mXmaxActivityItem', itemInfo)
         }
         else{
-            res.render('yError',{title:"s系统异常", message:"没找到对应的交换物品信息~"})
+            res.render('yError',{title:"系统异常", message:"没找到对应的交换物品信息~"})
         }
     })
 }
@@ -378,4 +404,27 @@ exports.xmasActivityItemUpdate = function(req, res){
     else{
         res.json({"errorCode":-1,"errorMsg":"更新圣诞礼遇物品状态时传入的参数不对"});
     }
+}
+
+
+// 烘焙活动详情页
+exports.renderAdminBakingActivity = function(req, res) {
+    let form_id = req.params.form_id
+    dbService.getAdminBakingActivityEnrolls(form_id, function(results){
+
+        if (results && results.length > 0) {
+            let enrolls = []
+
+            for(let i=0; i<results.length; i++){
+                let enrollInfo = getJsjBakingActivityDetail(results[i])
+                delete enrollInfo.raw_data
+                enrolls.push(enrollInfo)
+            }
+            console.log(JSON.stringify(enrolls))
+            res.render('admin/mBakingActivityInfo', {formID: form_id, formName: yhomeCfg.jsjFormNameMapping[form_id], enrolls: enrolls})
+        } else {
+            console.log(error)
+            res.render('yError',{title:"系统异常", message:"没找到对应的烘焙活动报名信息~"})
+        }
+    })
 }

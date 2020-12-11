@@ -837,3 +837,51 @@ exports.updateXmasActivityItem = function(itemInfo, cb){
         cb({"errorCode":-1,"errorMsg":'圣诞礼遇物品参数不正确'});
     }
 }
+
+
+// 根据form_id获取烘焙活动报名信息列表
+exports.getAdminBakingActivityEnrolls = function(form_id, cb){
+    console.log("QUERY_FormID: ", form_id)
+    async.auto({
+            enrolls:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                         FROM   form_jsj
+                         WHERE  form_type = 'BAKING' AND form = ?
+                         ORDER  BY id DESC
+                         */});
+
+                        let sqlParam = []
+                        sqlParam.push(form_id)
+
+                        conn.query(sql, sqlParam, function (error, results) {
+                            conn.release();
+                            if (error) {
+                                console.log("ERROR_DB_QUERY:", error)
+                                cb1("error_db_query", null);
+                            } else {
+                                cb1(null, results);
+                            }
+                        });
+                    }
+                });
+            }
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb([]);
+            } else {
+                // console.log("RESULTS:", results)
+                cb(results.enrolls);
+            }
+        }
+    );
+}

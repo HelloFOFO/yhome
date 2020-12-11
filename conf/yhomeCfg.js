@@ -25,7 +25,16 @@ let jsjItemMapping = {
         "itemPicUrl":"field_1",
         "contactName": "field_3",
         "contactMobile": "field_4"
+    },
+    "AWP5MW":{
+        "items": "field_1",
+        "contactName": "field_2",
+        "contactMobile": "field_3",
     }
 }
 
-module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping, mapItemStatus: mapItemStatus}
+let jsjFormNameMapping = {
+    "AWP5MW":"十二月烘焙活动报名"
+}
+
+module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping, mapItemStatus: mapItemStatus, jsjFormNameMapping: jsjFormNameMapping}

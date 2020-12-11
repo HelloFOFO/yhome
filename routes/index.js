@@ -17,6 +17,9 @@ router.get('/exchange/myXmasActivityItems', webAction.wxAuth, webAction.yHomeAut
 router.get('/ajax/exchange/myXmasActivityItems', webAction.wxAuth,webAction.yHomeAuth, webAction.getMyXmasActivityItems)
 
 
+
+
+
 router.get('/admin/onlinemarket/orderlist', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrders)
 router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminOrders)
 router.get('/admin/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrder)
@@ -26,5 +29,9 @@ router.get('/admin/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHom
 router.get('/admin/ajax/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminXmasActivityItems)
 router.get('/admin/exchange/xmasActivityItem/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminXmasActivityItem)
 router.post('/admin/ajax/exchange/xmasActivityItemUpdate', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.xmasActivityItemUpdate)
+
+
+// 查看烘焙活动详情情况
+router.get('/admin/baking/activity/:form_id', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.renderAdminBakingActivity )
 
 module.exports = router;

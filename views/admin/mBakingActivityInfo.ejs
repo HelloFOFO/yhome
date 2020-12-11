@@ -1,0 +1,98 @@
+<%include ../mHeader%>
+<link href="/css/pages/adminMBakingActivityInfo.css" rel="stylesheet" media="screen">
+
+<div class="div_head">
+    <span id="span_title"><%= formName%></span>
+</div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+    <div class="container">
+        <div class="div_sec">
+            <div class="div_sec_head">总体情况</div>
+            <div class="row">
+                <div class="col-xs-4" style="text-align: right;">报名记录数</div>
+                <div class="col-xs-8"><%= enrolls.length%>条</div>
+                <div class="col-xs-4" style="text-align: right;">报名场次数</div>
+                <div class="col-xs-8">
+                    <div id="div_total_enrollitems"></div>
+                </div>
+                <div class="col-xs-4" style="text-align: right;">总报名费</div>
+                <div class="col-xs-8">
+                    <div id="div_total_price"></div>
+                </div>
+            </div>
+        </div>
+        <div class="div_sec">
+            <div class="div_sec_head">报名场次汇总</div>
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="div_sec">
+            <div class="div_sec_head">报名场次明细</div>
+            <div class="row">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    let enrolls = JSON.parse('<%-JSON.stringify(enrolls)%>')
+
+    function initMe(){
+
+        let summary = _.reduce(enrolls
+            , function(sum, enroll){
+                let total_price = sum.total_price + enroll.total_price;
+                // let total_enrollitems = sum.total_enrollitems + enroll.enrollItems.length;
+                return {total_price: total_price}
+                }
+            , {total_price: 0.0}
+            )
+        // alert(JSON.stringify(summary))
+        let enrollItems = _.reduce(
+            enrolls
+            ,function(items, enroll){
+                return items.concat(
+                    _.map(
+                        enroll.enrollItems
+                        , function(enrollItem){
+                            let newEnrollItem = enrollItem;
+                            newEnrollItem.contactName = enroll.contactName;
+                            newEnrollItem.contactMobile = enroll.contactMobile;
+                            return newEnrollItem
+                            }
+                        )
+                )
+            }
+            ,[]
+        )
+
+        let total_enrollitems = _.reduce(enrollItems,function(total, enrollItem){return enrollItem.number+ total}, 0)
+        // alert(total_enrollitems)
+        summary.total_enrollitems = total_enrollitems
+
+        let groupByItem = _.groupBy(enrollItems,"name")
+        // console.log(JSON.stringify(groupByItem))
+
+        let itemSummary = _.mapObject(groupByItem, function (enrollItems) {
+            return _.reduce(enrollItems, function(total, enrollItem){return enrollItem.number + total}, 0)
+        })
+        // console.log(JSON.stringify(itemSummary))
+
+        $('#div_total_price').text(Math.round(summary.total_price))
+        $('#div_total_enrollitems').text(Math.round(summary.total_enrollitems))
+    }
+
+    $(document).ready(function() {
+        initMe();
+    });
+
+</script>
+
+<%include ../mFooter%>
+
