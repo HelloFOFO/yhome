@@ -10,7 +10,7 @@
         <div class="div_sec">
             <div class="div_sec_head">总体情况</div>
             <div class="row">
-                <div class="col-xs-4" style="text-align: right;">报名记录数</div>
+                <div class="col-xs-4" style="text-align: right;">付费笔数</div>
                 <div class="col-xs-8"><%= enrolls.length%>条</div>
                 <div class="col-xs-4" style="text-align: right;">报名场次数</div>
                 <div class="col-xs-8">
@@ -25,13 +25,21 @@
         <div class="div_sec">
             <div class="div_sec_head">报名场次汇总</div>
             <div class="row">
-
+                <div class="col-xs-12">
+                    <table id="table_summary" class="table_show">
+                        <thead>
+                        <tr>
+                            <th>场次名称</th>
+                            <th>报名数</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="div_sec">
             <div class="div_sec_head">报名场次明细</div>
-            <div class="row">
-
+            <div class="row" id="div_item_detail">
             </div>
         </div>
     </div>
@@ -78,11 +86,28 @@
 
         let groupByItem = _.groupBy(enrollItems,"name")
         // console.log(JSON.stringify(groupByItem))
+        _.each(groupByItem, function(itemDetails, itemName){
+            let sItemName = '<div class="div_item_name col-xs-12">'+itemName+'</div>'
+
+            let sItemDetail = '<div class="col-xs-12"><table class="table_show"><thead><tr><td>联系人</td><td>联系电话</td><td>份数</td></tr></thead>'
+
+            _.each(itemDetails, function(item){
+                sItemDetail += '<tr><td>'+item.contactName+'</td><td>'+item.contactMobile+'</td><td>'+item.number+'</td></tr>'
+            })
+
+            sItemDetail += '</div></table>'
+
+            $('#div_item_detail').append(sItemName).append(sItemDetail)
+        })
 
         let itemSummary = _.mapObject(groupByItem, function (enrollItems) {
             return _.reduce(enrollItems, function(total, enrollItem){return enrollItem.number + total}, 0)
         })
         // console.log(JSON.stringify(itemSummary))
+        _.each(itemSummary, function(itemCount, itemName){
+            let s = '<tr><td>'+itemName.toString()+'</td><td>'+itemCount.toString()+'</td></tr>'
+            $('#table_summary').append(s)
+        })
 
         $('#div_total_price').text(Math.round(summary.total_price))
         $('#div_total_enrollitems').text(Math.round(summary.total_enrollitems))

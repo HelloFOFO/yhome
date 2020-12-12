@@ -5,3 +5,29 @@
 .div_value{
 
 }
+
+.table_show{
+    border: 1px solid lightskyblue;
+    width: 90%;
+    margin-left: 10px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.table_show th{
+    border: 1px solid lightskyblue;
+    text-align: center;
+}
+
+.table_show td{
+    border: 1px solid lightskyblue;
+    text-align: center;
+}
+
+.div_item_name{
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #00a65a;
+    margin-top: 10px;
+}
