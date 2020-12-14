@@ -23,6 +23,21 @@
             </div>
         </div>
         <div class="div_sec">
+            <div class="div_sec_head">报名日期汇总</div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="table_summaryDate" class="table_show">
+                        <thead>
+                        <tr>
+                            <th>报名日期</th>
+                            <th>报名场次数</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="div_sec">
             <div class="div_sec_head">报名场次汇总</div>
             <div class="row">
                 <div class="col-xs-12">
@@ -61,6 +76,7 @@
                 }
             , {total_price: 0.0}
             )
+
         // alert(JSON.stringify(summary))
         let enrollItems = _.reduce(
             enrolls
@@ -72,6 +88,7 @@
                             let newEnrollItem = enrollItem;
                             newEnrollItem.contactName = enroll.contactName;
                             newEnrollItem.contactMobile = enroll.contactMobile;
+                            newEnrollItem.createdAt = moment(enroll.created_at).format('YYYY-MM-DD');
                             return newEnrollItem
                             }
                         )
@@ -79,6 +96,17 @@
             }
             ,[]
         )
+        // console.log(enrollItems)
+
+        let summaryDate = _.mapObject(_.groupBy(enrollItems, "createdAt")
+            ,function(enrolls){return enrolls.length }
+        )
+
+        // console.log(summaryDate)
+        _.each(summaryDate, function(cnt, date){
+            let s = '<tr><td>'+date+'</td><td>'+cnt.toString()+'</td></tr>'
+            $('#table_summaryDate').append(s)
+        })
 
         let total_enrollitems = _.reduce(enrollItems,function(total, enrollItem){return enrollItem.number+ total}, 0)
         // alert(total_enrollitems)

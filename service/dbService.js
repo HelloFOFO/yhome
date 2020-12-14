@@ -385,7 +385,7 @@ exports.getXmasActivityItems = function(minId, pageSize, cb){
                         let sqlParams = []
 
                         //where条件后续添加
-                        let whereClause = 'WHERE form_type = \'EXCHANGE_1\'';
+                        let whereClause = 'WHERE form_type = \'EXCHANGE_1\' AND order_status = \'GOT\'';
                         if(minId != -1)    { whereClause +=' and id < ?';     sqlParams.push(minId)}
 
                         sqlParams = sqlParams.concat([pageSize]);

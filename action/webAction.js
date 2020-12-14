@@ -420,7 +420,7 @@ exports.renderAdminBakingActivity = function(req, res) {
                 delete enrollInfo.raw_data
                 enrolls.push(enrollInfo)
             }
-            console.log(JSON.stringify(enrolls))
+            // console.log(JSON.stringify(enrolls))
             res.render('admin/mBakingActivityInfo', {formID: form_id, formName: yhomeCfg.jsjFormNameMapping[form_id], enrolls: enrolls})
         } else {
             console.log(error)
