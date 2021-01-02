@@ -14,8 +14,8 @@ if(debug){
     //生产环境
     db.slaveHost = '127.0.0.1';
     db.host      = '127.0.0.1';
-    db.user      = 'sow';
-    db.password  = '90op()OP';
+    db.user      = 'lzs';
+    db.password  = 'lzs';
     db.database  = 'yhome';
 }
 
