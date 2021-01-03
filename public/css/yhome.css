@@ -7,7 +7,7 @@
 }
 
 .div_content{
-    min-height: 800px;
+    min-height: 600px;
     background-color: #EAEAEA;
     width: 100%;
 }
@@ -18,6 +18,7 @@
     margin-bottom: 0px;
     height: 30px;
     line-height: 30px;
+    background-color: #EAEAEA;
 }
 
 .div_sec{

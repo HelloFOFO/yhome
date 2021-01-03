@@ -885,3 +885,153 @@ exports.getAdminBakingActivityEnrolls = function(form_id, cb){
         }
     );
 }
+
+
+exports.insert_ord_order = function(orderInfo, cb){
+    try{
+        async.auto({
+                insertDB:function(cb1){
+                    pool.getConnection(function (error, conn) {
+                        if (error) {
+                            cb1("error_db_connect", null);
+                        } else {
+                            let sql = heredoc(function () {/*
+                             INSERT INTO ord_orders(form_jsj_id,order_status,contact_name,contact_mobile,pickup_location,rec_code
+                                ,order_items,total_price,preferential_price,trade_no,trade_status,payment_method
+                                ,gen_code,weixin_openid,weixin_headimgurl,weixin_nickname,weixin_gender
+                                ,weixin_province,weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt)
+                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW());
+                             */});
+                            let sqlParam = []
+
+                            sqlParam.push(orderInfo.id)
+                            sqlParam.push(orderInfo.order_status)
+                            sqlParam.push(orderInfo.contactName)
+                            sqlParam.push(orderInfo.contactMobile)
+                            sqlParam.push(orderInfo.pickupLocation)
+                            sqlParam.push(orderInfo.rec_code)
+                            sqlParam.push(JSON.stringify(orderInfo.orderItems))
+                            sqlParam.push(orderInfo.total_price)
+                            sqlParam.push(orderInfo.preferential_price)
+                            sqlParam.push(orderInfo.trade_no)
+                            sqlParam.push(orderInfo.trade_status)
+                            sqlParam.push(orderInfo.payment_method)
+                            sqlParam.push(orderInfo.gen_code)
+                            sqlParam.push(orderInfo.x_field_weixin_openid)
+                            sqlParam.push(orderInfo.x_field_weixin_headimgurl)
+                            sqlParam.push(orderInfo.x_field_weixin_nickname)
+                            sqlParam.push(orderInfo.x_field_weixin_gender)
+                            sqlParam.push(orderInfo.x_field_weixin_province)
+                            sqlParam.push(orderInfo.x_field_weixin_city)
+                            sqlParam.push(orderInfo.creator_name)
+                            sqlParam.push(orderInfo.created_at)
+                            sqlParam.push(orderInfo.updated_at)
+                            sqlParam.push(orderInfo.info_remote_ip)
+
+                            conn.query(sql, sqlParam, function (error) {
+                                conn.release();
+                                if (error) {
+                                    cb1("error_db_query");
+                                } else {
+                                    cb(null);
+                                }
+                            });
+                        }
+                    });
+                }
+            },function(err){
+                if (err) {
+                    console.log(err)
+                    cb({"errorCode":-1,"errorMsg":'插入订单表信息失败'});
+                } else {
+                    cb(null);
+                }
+            }
+        );
+
+    }
+    catch (e) {
+        console.log(e)
+        cb({"errorCode":-1,"errorMsg":'插入订单表信息失败'})
+    }
+}
+
+exports.get_latest_orders_from_form_jsj = function(cb){
+    let max_form_jsj_id = -1
+    async.auto({
+        max_form_jsj_id:function(cb1){
+                pool.getConnection(function (error, conn) {
+                    if (error) {
+                        console.log("ERROR_DB_CONNECT:", error)
+                        cb1("error_db_connect", null);
+                    } else {
+                        let sql = heredoc(function () {/*
+                         SELECT MAX(form_jsj_id) AS max_form_jsj_id
+                         FROM   ord_orders;
+                         */});
+
+                        conn.query(sql, function (error, results) {
+                            conn.release();
+                            if (error || !results) {
+                                console.log("ERROR_DB_QUERY:", error)
+
+                            } else {
+                                // console.log("DB_RESULTS:", results)
+                                // console.log("max_form_jsj_id now is ", max_form_jsj_id)
+                                max_form_jsj_id = results.length == 1 ? results[0].max_form_jsj_id||max_form_jsj_id : max_form_jsj_id
+                            }
+                            console.log("MAX_FORM_JSJ_ID:",max_form_jsj_id)
+                            cb1(null, max_form_jsj_id);
+                        });
+                    }
+                });
+            },
+        orders: ['max_form_jsj_id', function(cb2, results){
+            pool.getReadOnlyConnection(function(error,conn) {
+                if (error) {
+                    console.log("db connect error");
+                    cb2("error_db_connect", null);
+                }
+                else {
+                    if(!results.max_form_jsj_id){
+                        cb2("获取已转换的最大订单ID失败",null);
+                    }
+                    else{
+                        let sqlParams = []
+                        sqlParams.push(results.max_form_jsj_id)
+
+                        let sql = heredoc(function () {/*
+                             SELECT id,order_status,form_type,raw_data,form,form_name,serial_number,total_price,preferential_price,trade_no,trade_status
+                               ,payment_method,gen_code
+                               ,x_field_weixin_openid,x_field_weixin_headimgurl,x_field_weixin_nickname,x_field_weixin_gender
+                               ,x_field_weixin_province,x_field_weixin_city,creator_name,created_at,updated_at,info_remote_ip,sys_insert_dt,sys_update_dt
+                             FROM   form_jsj
+                             WHERE  form_type = 'ONLINEORDER' AND id > ?
+                     */});
+
+                        conn.query( sql,sqlParams, function(err,rows){
+                            conn.release();
+                            if(err){
+                                console.log("db query error");
+                                console.log(sql);
+                                cb2("error_db_query",null);
+                            }
+                            else{
+                                cb2(null,rows);
+                            }
+                        });
+                    }
+                }
+            });
+        }]
+        },function(err,results){
+            if (err) {
+                console.log("ERROR_FUNCTION:", err)
+                cb([]);
+            } else {
+                // console.log("RESULTS:", results)
+                cb(results.orders);
+            }
+        }
+    );
+}

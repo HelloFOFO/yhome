@@ -1,0 +1,22 @@
+.div-activity{
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin: 3px 0px 10px 0px;
+    padding: 3px;
+
+}
+
+.div-activity div{
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.activity-title{
+    font-size: 16px;
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+.activity-content a{
+    color: #0c91e5;
+}

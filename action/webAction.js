@@ -428,3 +428,7 @@ exports.renderAdminBakingActivity = function(req, res) {
         }
     })
 }
+
+exports.renderActivityLtxza = function(req, res){
+    res.render('mLtxza')
+}
