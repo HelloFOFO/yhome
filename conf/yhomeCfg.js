@@ -19,6 +19,7 @@ let jsjItemMapping = {
         "contactName": "field_2",
         "contactMobile": "field_3",
         "pickupLocation": "field_6",
+        "recCode": "field_8"
     },
     "X72F7t":{
         "itemName":"field_2",
@@ -30,6 +31,12 @@ let jsjItemMapping = {
         "items": "field_1",
         "contactName": "field_2",
         "contactMobile": "field_3",
+    },
+    "V5YuIy":{
+        "items": "field_1",
+        "contactName": "field_2",
+        "contactMobile": "field_3",
+        "pickupLocation": "field_5",
     }
 }
 
