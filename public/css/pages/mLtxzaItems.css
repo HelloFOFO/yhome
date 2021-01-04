@@ -13,7 +13,12 @@
     height: 50px;
     line-height: 50px;
 }
-
+.div-subtitle{
+    text-align: center;
+    font-size: 14px;
+    color: #0c91e5;
+    text-decoration: underline;
+}
 .div-item{
     border: 1px solid lightgrey;
     border-radius: 5px;

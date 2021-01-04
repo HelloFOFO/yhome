@@ -8,9 +8,12 @@
 <div class="div_content" style="display: table;">
     <!--页面内容放在这儿-->
     <div class="container">
+        <div class="row div-subtitle margin-bottom-20">
+            所有爱心物品
+        </div>
         <div class="row margin-bottom-10">
             <div class="col-xs-12">
-                <div id="div_items" style="min-height: 400px;">
+                <div id="div_items" style="min-height: 200px; text-align: center">
 
                 </div>
             </div>
@@ -18,7 +21,7 @@
         <div class="row">
             <div class="col-xs-12 text-center">
                 <button id="btn_more" type="button" class="btn btn-primary">加载更多......</button>
-                <button id="btn_upload" type="button" class="btn btn-warning">我要参加</button>
+                <button id="btn_upload" type="button" class="btn btn-warning">我要捐物</button>
                 <div id="div_min_id" style="visibility: hidden"></div>
             </div>
         </div>
@@ -83,10 +86,14 @@
                     return item.id
                 }).id
             }
+            else{
+                if(minId == -1){
+                    $('#div_items').html("<span style='color:grey;'>暂时还没有爱心物品</span>")
+                }
+            }
             if(items.length < pageSize){
                 $('#btn_more').attr("disabled", true)
                 $('#btn_more').text("没有更多了~")
-
             }
 
             $('#div_min_id').text(minId.toString())

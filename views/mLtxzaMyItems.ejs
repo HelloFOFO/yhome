@@ -8,6 +8,9 @@
 <div class="div_content" style="display: table;">
     <!--页面内容放在这儿-->
     <div class="container">
+        <div class="row div-subtitle margin-bottom-20">
+            我的爱心物品
+        </div>
         <div class="row margin-bottom-10">
             <div class="col-xs-12">
                 <div id="div_items" style="min-height: 200px; text-align: center">
@@ -16,8 +19,9 @@
         </div>
         <div class="row margin-bottom-30">
             <div class="col-xs-12 text-center">
-                <a class="a_view_all" href="/activity/ltxza/<%= activityId%>/items">查看全部物品</a>
-                <button id="btn_upload" type="button" class="btn btn-warning">我要上传</button>
+                <button id="btn_all" type="button" class="btn btn-primary">查看全部物品</button>
+                <!--<a class="a_view_all" href="/activity/ltxza/<%= activityId%>/items">查看全部物品</a>-->
+                <button id="btn_upload" type="button" class="btn btn-warning">我要捐物</button>
             </div>
         </div>
     </div>
@@ -65,7 +69,7 @@
                 $('#div_items').html(html)
             }
             else{
-                $('#div_items').html("您还没有提交过任何物品")
+                $('#div_items').html("<span style='color:grey;'>您还没有提交过任何物品</span>")
             }
         });
     }
@@ -75,6 +79,10 @@
 
         $('#btn_upload').click(function(){
             $(location).attr('href', 'https://jinshuju.net/f/'+activityId)
+        })
+
+        $('#btn_all').click(function(){
+            $(location).attr('href', '/activity/ltxza/'+activityId+'/items')
         })
     }
 
