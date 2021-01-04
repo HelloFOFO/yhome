@@ -432,3 +432,55 @@ exports.renderAdminBakingActivity = function(req, res) {
 exports.renderActivityLtxza = function(req, res){
     res.render('mLtxza')
 }
+
+exports.renderLtxzaMyItems = function(req ,res){
+    let activityId = req.params.activityId
+    let activityName = yhomeCfg.jsjFormNameMapping[activityId]
+
+    res.render('mLtxzaMyItems', {"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+}
+
+exports.getLtxzaMyItems = function(req, res){
+    let openId = req.session.openId
+    let activityId = req.params.activityId
+    let items = []
+    dbService.getLtxzaMyItems(openId, activityId, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjXmasExchangeItemDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        res.json({"items":items})
+    })
+}
+
+
+exports.renderLtxzaItems = function(req ,res){
+    let activityId = req.params.activityId
+    let activityName = yhomeCfg.jsjFormNameMapping[activityId]
+
+    res.render('mLtxzaItems', {"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+}
+
+exports.getLtxzaItems = function(req, res){
+    // minId为页面列表中当前显示的最小的id，后端需要取比这个小的 pageSize 个
+    let minId = parseInt(req.query.min_id) || -1
+    let pageSize = parseInt(req.query.page_size) || 5
+    let activityId = req.params.activityId
+
+    let items = []
+    // console.log("minId",minId)
+    // console.log("pageSize",pageSize)
+    dbService.getLtxzaItems(minId, pageSize,activityId, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjXmasExchangeItemDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        res.json({"items":items})
+    })
+}

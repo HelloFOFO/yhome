@@ -37,11 +37,19 @@ let jsjItemMapping = {
         "contactName": "field_2",
         "contactMobile": "field_3",
         "pickupLocation": "field_5",
+    },
+    "BjBjYp":{
+        "itemName":"field_2",
+        "itemPicUrl":"field_1",
+        "contactName": "field_3",
+        "contactMobile": "field_4",
+        "contactBuilding": "field_6"
     }
 }
 
 let jsjFormNameMapping = {
-    "AWP5MW":"十二月烘焙活动报名"
+    "AWP5MW":"十二月烘焙活动报名",
+    "BjBjYp":"蓝天下的至爱-普雄居委专场"
 }
 
 module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping, mapItemStatus: mapItemStatus, jsjFormNameMapping: jsjFormNameMapping}

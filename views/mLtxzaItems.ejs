@@ -1,0 +1,113 @@
+<%include mHeader%>
+
+<link href="/css/pages/mLtxzaItems.css" rel="stylesheet" media="screen">
+<div class="div_head">
+    <%= activityName%>
+</div>
+<div class="clearfix"></div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+    <div class="container">
+        <div class="row margin-bottom-10">
+            <div class="col-xs-12">
+                <div id="div_items" style="min-height: 400px;">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <button id="btn_more" type="button" class="btn btn-primary">加载更多......</button>
+                <button id="btn_upload" type="button" class="btn btn-warning">我要参加</button>
+                <div id="div_min_id" style="visibility: hidden"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/plugins/handlebars/handlebars.js"></script>
+
+<script type="text/x-handlebars-template" id="itemTemplate">
+    {{#each this}}
+    <div id="div_item_{{this.id}}" class="div-item">
+        <div class="row">
+            <div class="col-xs-12 item-name">{{this.itemName}}</div>
+            {{#each itemPicUrl}}
+            <div class="col-xs-12 text-center">
+                <img src="{{this}}" class="item-img">
+            </div>
+            {{/each}}
+        </div>
+        <!--{{#if this.x_field_weixin_headimgurl}}-->
+        <!--<div class="row margin-top-10">-->
+
+            <!--<div class="col-xs-3 text-right padding-right-0">-->
+                <!--<img src="{{this.x_field_weixin_headimgurl}}" class="item-owner-headimgurl">-->
+            <!--</div>-->
+            <!--<div class="col-xs-9 item-owner-nickname">-->
+                <!--{{this.x_field_weixin_nickname}}-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--{{/if}}-->
+        <div class="clearfix"></div>
+    </div>
+    {{/each}}
+</script>
+
+<script>
+    <!--额外的一些JavaScript放在这儿-->
+    let minId = -1  //默认当前页面展示的最小ID
+    let pageSize = 5 //默认每次加载的item数量
+    let activityId = '<%= activityId%>'
+
+    function getMoreItems() {
+        let url = '/ajax/activity/ltxza/'+activityId+'/items?min_id='+minId.toString()+'&page_size='+pageSize.toString()
+        $.ajax({
+            url:url,
+            method:'GET'
+        }).done(function(data){
+            let items = data.items
+            if(data.items.length > 0 ){
+                // console.log("IM HERE "+items.length)
+                // console.log(JSON.stringify(items))
+
+                let source   = $("#itemTemplate").html();
+                let template = Handlebars.compile(source);
+                let html     = template(items);
+
+                // console.log(html)
+                $('#div_items').append(html)
+                // $('#div_items').html($('#div_items').html()+html)
+
+                minId = _.min(items, function(item){
+                    return item.id
+                }).id
+            }
+            if(items.length < pageSize){
+                $('#btn_more').attr("disabled", true)
+                $('#btn_more').text("没有更多了~")
+
+            }
+
+            $('#div_min_id').text(minId.toString())
+        });
+    }
+
+    function initMe() {
+        getMoreItems()
+        $('#btn_more').click(function(){
+            getMoreItems()
+        })
+        $('#btn_upload').click(function(){
+            $(location).attr('href', 'https://jinshuju.net/f/'+activityId)
+        })
+    }
+
+    $(document).ready(function() {
+        initMe();
+    });
+
+</script>
+
+<%include mFooter%>
+

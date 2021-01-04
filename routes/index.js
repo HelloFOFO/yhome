@@ -24,6 +24,7 @@ router.get('/admin/ajax/onlinemarket/orders', webAction.wxAuth, webAction.yHomeA
 router.get('/admin/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminOnlineOrder)
 router.post('/admin/ajax/onlinemarket/orderupdate', webAction.wxAuth,webAction.yHomeAdminAuth, webAction.orderUpdate)
 
+
 router.get('/admin/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminXmasActivityItems)
 router.get('/admin/ajax/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.getAdminXmasActivityItems)
 router.get('/admin/exchange/xmasActivityItem/:id', webAction.wxAuth, webAction.yHomeAdminAuth, webAction.renderAdminXmasActivityItem)
@@ -33,6 +34,13 @@ router.post('/admin/ajax/exchange/xmasActivityItemUpdate', webAction.wxAuth,webA
 
 // 蓝天下至爱系列
 router.get('/activity/ltxza', webAction.wxAuth, webAction.yHomeAuth, webAction.renderActivityLtxza)
+
+router.get('/activity/ltxza/:activityId/myItems', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaMyItems)
+router.get('/ajax/activity/ltxza/:activityId/myItems', webAction.wxAuth, webAction.yHomeAuth, webAction.getLtxzaMyItems)
+router.get('/activity/ltxza/:activityId/items', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaItems)
+router.get('/ajax/activity/ltxza/:activityId/items', webAction.wxAuth,webAction.yHomeAuth, webAction.getLtxzaItems)
+
+
 
 
 // 查看烘焙活动详情情况
