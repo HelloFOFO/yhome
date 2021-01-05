@@ -442,7 +442,7 @@ exports.renderLtxzaActivityDetail = function(req, res){
 
     if (useragent.indexOf('MicroMessenger') != -1) {
         // 是微信
-        let url = 'http://' + req.hostname + req.originalUrl
+        let url = 'https://' + req.hostname + req.originalUrl
         weiXinSdk.getConfigParams(url, false, ['updateAppMessageShareData'], (error, params) => {
             res.render('mLtxzaActivityDetail', {isWeiXin:true, params: JSON.stringify(params) ,"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
         })
