@@ -433,6 +433,25 @@ exports.renderActivityLtxza = function(req, res){
     res.render('mLtxza')
 }
 
+
+exports.renderLtxzaActivityDetail = function(req, res){
+    let activityId = req.params.activityId
+    let activityName = yhomeCfg.jsjFormNameMapping[activityId]
+
+    let useragent = req.headers['user-agent']
+
+    if (useragent.indexOf('MicroMessenger') != -1) {
+        // 是微信
+        let url = 'http://' + req.hostname + req.originalUrl
+        weiXinSdk.getConfigParams(url, false, ['onMenuShareAppMessage'], (error, params) => {
+            res.render('mLtxzaActivityDetail', {isWeiXin:true, params: JSON.stringify(params) ,"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+        })
+    } else {
+        res.render('mLtxzaActivityDetail', {isWeiXin:false,"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+    }
+
+}
+
 exports.renderLtxzaMyItems = function(req ,res){
     let activityId = req.params.activityId
     let activityName = yhomeCfg.jsjFormNameMapping[activityId]

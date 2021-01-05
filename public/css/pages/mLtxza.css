@@ -14,9 +14,24 @@
 .activity-title{
     font-size: 16px;
     font-weight: bold;
-    color: cornflowerblue;
+    /*color: cornflowerblue;*/
 }
 
-.activity-content a{
-    color: #0c91e5;
+.activity-title a{
+    color: #45b6af;
+}
+
+.a-button{
+    background-color: #45b6af;
+    border-radius: 3px;
+    padding: 4px;
+    color: white;
+    border-color: #3ea49d;
+}
+
+.a-button-disabled{
+    background-color: grey;
+    border-radius: 3px;
+    padding: 4px;
+    color: white;
 }

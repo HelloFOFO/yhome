@@ -35,6 +35,8 @@ router.post('/admin/ajax/exchange/xmasActivityItemUpdate', webAction.wxAuth,webA
 // 蓝天下至爱系列
 router.get('/activity/ltxza', webAction.wxAuth, webAction.yHomeAuth, webAction.renderActivityLtxza)
 
+router.get('/activity/ltxza/:activityId', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaActivityDetail)
+
 router.get('/activity/ltxza/:activityId/myItems', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaMyItems)
 router.get('/ajax/activity/ltxza/:activityId/myItems', webAction.wxAuth, webAction.yHomeAuth, webAction.getLtxzaMyItems)
 router.get('/activity/ltxza/:activityId/items', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaItems)
