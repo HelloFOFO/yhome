@@ -60,15 +60,17 @@
     // alert(JSON.stringify(<%-params%>));
 
     wx.ready(function () {
-        wx.onMenuShareAppMessage({
+        wx.updateAppMessageShareData({
             title: '<%- activityName%>', // 分享标题
             desc: desc, // 分享描述
             link: fwdLink, // 分享链接
             imgUrl: 'https://yhome.tltr.top/img/logo.jpeg', // 分享图标
             type: 'link', // 分享类型,music、video或link，不填默认为link
             success: function () {
+                alert(1)
             },
             cancel: function () {
+                alert(2)
             }
         });
     });
