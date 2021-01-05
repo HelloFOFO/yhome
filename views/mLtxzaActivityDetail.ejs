@@ -53,8 +53,8 @@
 <script>
     <!--额外的一些JavaScript放在这儿-->
     <%if (isWeiXin) {%>
-    let fwdLink = location.href
-    let desc = '捐一份闲置，献一份爱心；快来参加"'+'<%- activityName%>'+'"'
+    let fwdLink = location.href.split('?')[0]
+    let desc = '捐一份闲置，献一份爱心；快来参加"'+'<%- activityName%>'+'"活动吧~'
     //alert(fwdLink);
     wx.config(<%-params%>);
     // alert(JSON.stringify(<%-params%>));
@@ -64,7 +64,7 @@
             title: '<%- activityName%>', // 分享标题
             desc: desc, // 分享描述
             link: fwdLink, // 分享链接
-            imgUrl: 'https://yhome.tltr.top/imp/logo.jpeg', // 分享图标
+            imgUrl: 'https://yhome.tltr.top/img/logo.jpeg', // 分享图标
             type: 'link', // 分享类型,music、video或link，不填默认为link
             success: function () {
             },
