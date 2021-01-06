@@ -15,9 +15,9 @@
 }
 .div-subtitle{
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     color: #0c91e5;
-    text-decoration: underline;
+    /*text-decoration: underline;*/
 }
 .div-item{
     border: 1px solid lightgrey;

@@ -49,7 +49,7 @@ let jsjItemMapping = {
 
 let jsjFormNameMapping = {
     "AWP5MW":"十二月烘焙活动报名",
-    "BjBjYp":"蓝天下的至爱-普雄居委专场"
+    "BjBjYp":" 小宇家【蓝天下的至爱】普雄居委专场"
 }
 
 module.exports = {mapOrderStatus: mapOrderStatus, jsjItemMapping: jsjItemMapping, mapItemStatus: mapItemStatus, jsjFormNameMapping: jsjFormNameMapping}
