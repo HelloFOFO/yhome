@@ -34,6 +34,11 @@ ALTER TABLE form_jsj ADD form_type varchar(20) AFTER id;
 ALTER TABLE form_jsj DROP COLUMN order_status;
 ALTER TABLE form_jsj ADD order_status varchar(10) DEFAULT 'INIT' AFTER id ;  
 
+ALTER TABLE form_jsj MODIFY COLUMN sys_update_dt timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ;
+
+ALTER TABLE form_jsj ADD remark varchar(100) AFTER info_remote_ip;
+
+SHOW CREATE TABLE form_jsj;
 
 -- 在线订单表，目前需要从 form_jsj 里面复制过来，并做一定的解析
 -- DROP TABLE IF EXISTS ord_orders;

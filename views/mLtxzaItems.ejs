@@ -34,7 +34,7 @@
     {{#each this}}
     <div id="div_item_{{this.id}}" class="div-item">
         <div class="row">
-            <div class="col-xs-12 item-name">{{this.itemName}}</div>
+            <div class="col-xs-12 item-name">{{this.itemName}}{{getBoxName this.}}</div>
             {{#each itemPicUrl}}
             <div class="col-xs-12 text-center">
                 <img src="{{this}}" class="item-img">
@@ -61,7 +61,12 @@
     <!--额外的一些JavaScript放在这儿-->
     let minId = -1  //默认当前页面展示的最小ID
     let pageSize = 5 //默认每次加载的item数量
-    let activityId = '<%= activityId%>'
+    let activityId = '<%- activityId%>'
+    let showBox = <%- showBox%>
+
+    Handlebars.registerHelper('getBoxName', function (boxName) {
+        return showBox ? boxName+"号盲盒":""
+    });
 
     function getMoreItems() {
         let url = '/ajax/activity/ltxza/'+activityId+'/items?min_id='+minId.toString()+'&page_size='+pageSize.toString()
