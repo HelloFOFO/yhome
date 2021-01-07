@@ -44,3 +44,8 @@ SELECT * FROM ord_orders;
 -- TRUNCATE TABLE ord_orders;
 
 -- UPDATE form_jsj SET order_status = 'GOT'  WHERE form_type = 'EXCHANGE_1' ;
+
+-- 蓝天下至爱
+SELECT * FROM form_jsj WHERE form_type = 'LTXZA' ORDER BY ID DESC;
+SELECT * FROM form_jsj WHERE form_type = 'LTXZA_BOX' ORDER BY ID DESC;
+

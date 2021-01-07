@@ -5,6 +5,29 @@ let yhomeCfg = require('./../conf/yhomeCfg')
 let weiXinSdk = require('node-weixin-media-platform-api')().init(cfg.wx)
 let moment = require('moment')
 
+
+let getJsjBoxDetail = function(boxData){
+    let boxInfo = boxData
+
+    try{
+        let rawData = JSON.parse(boxData.raw_data)
+
+        boxInfo.boxName = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].boxName]
+        boxInfo.boxAmount = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].boxAmount]
+        boxInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactName]
+        boxInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactMobile]
+    }
+    catch (e) {
+        console.log("ERROR PARSE ORDERDATA:", orderData)
+        boxInfo.boxName = []
+        boxInfo.boxAmount = ""
+        boxInfo.contactName = ""
+        boxInfo.contactMobile = ""
+    }
+
+    return boxInfo
+}
+
 let getJsjXmasExchangeItemDetail = function(itemData){
     let itemInfo = itemData
 
@@ -467,6 +490,30 @@ exports.getLtxzaMyItems = function(req, res){
         if(data){
             for(let i=0; i<data.length; i++){
                 let item = getJsjXmasExchangeItemDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        res.json({"items":items})
+    })
+}
+
+
+exports.renderLtxzaMyBox = function(req ,res){
+    let activityId = req.params.activityId
+    let activityName = yhomeCfg.jsjFormNameMapping[activityId]
+
+    res.render('mLtxzaMyBox', {"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+}
+
+exports.getLtxzaMyBox = function(req, res){
+    let openId = req.session.openId
+    let activityId = req.params.activityId
+    let items = []
+    dbService.getLtxzaMyBox(openId, activityId, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjBoxDetail(data[i])
                 delete item.raw_data
                 items.push(item)
             }

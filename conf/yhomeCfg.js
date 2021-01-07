@@ -44,6 +44,12 @@ let jsjItemMapping = {
         "contactName": "field_3",
         "contactMobile": "field_4",
         "contactBuilding": "field_6"
+    },
+    "PNvPtm":{
+        "boxName":"field_1",
+        "boxAmount":"field_2",
+        "contactName": "field_3",
+        "contactMobile": "field_4",
     }
 }
 
