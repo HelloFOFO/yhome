@@ -18,7 +18,7 @@ let getJsjBoxDetail = function(boxData){
         boxInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[boxInfo.form].contactMobile]
     }
     catch (e) {
-        console.log("ERROR PARSE ORDERDATA:", orderData)
+        console.log("ERROR PARSE ORDERDATA:", boxInfo)
         boxInfo.boxName = []
         boxInfo.boxAmount = ""
         boxInfo.contactName = ""
