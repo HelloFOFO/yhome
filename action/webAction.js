@@ -12,10 +12,10 @@ let getJsjBoxDetail = function(boxData){
     try{
         let rawData = JSON.parse(boxData.raw_data)
 
-        boxInfo.boxName = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].boxName]
-        boxInfo.boxAmount = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].boxAmount]
-        boxInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactName]
-        boxInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[orderData.form].contactMobile]
+        boxInfo.boxName = rawData.entry[yhomeCfg.jsjItemMapping[boxInfo.form].boxName]
+        boxInfo.boxAmount = rawData.entry[yhomeCfg.jsjItemMapping[boxInfo.form].boxAmount]
+        boxInfo.contactName = rawData.entry[yhomeCfg.jsjItemMapping[boxInfo.form].contactName]
+        boxInfo.contactMobile = rawData.entry[yhomeCfg.jsjItemMapping[boxInfo.form].contactMobile]
     }
     catch (e) {
         console.log("ERROR PARSE ORDERDATA:", orderData)
