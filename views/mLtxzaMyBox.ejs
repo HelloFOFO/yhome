@@ -1,6 +1,6 @@
 <%include mHeader%>
 
-<link href="/css/pages/mLtxzaMyItems.css" rel="stylesheet" media="screen">
+<link href="/css/pages/mLtxzaMyBox.css" rel="stylesheet" media="screen">
 <div class="div_head">
     <p style="font-size: 20px; font-weight: bold; color: green"><%= activityName%></p>
 </div>
@@ -32,9 +32,9 @@
     <div id="div_item_{{this.id}}" class="div-item">
         <div class="row">
             <div class="col-xs-3 item-name">{{this.boxName}}</div>
-            <div class="col-xs-3 item-name">{{this.boxAmount}}</div>
+            <div class="col-xs-2 item-name">{{this.boxAmount}}元</div>
             <div class="col-xs-3 item-name">{{this.contactName}}</div>
-            <div class="col-xs-3 item-name">{{this.contactMobile}}</div>
+            <div class="col-xs-4 item-name">{{this.contactMobile}}</div>
         </div>
         <div class="clearfix"></div>
     </div>
