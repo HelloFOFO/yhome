@@ -1,0 +1,58 @@
+#span_title{
+    font-size: 20px;
+    font-weight: bold;
+    color: #00a65a;
+}
+
+#btn_upload{
+    background-color: #00a65a;
+    border-color: #00a65a;
+}
+
+.div_head{
+    height: 50px;
+    line-height: 50px;
+}
+
+.div-subtitle{
+    text-align: center;
+    font-size: 16px;
+    color: #0c91e5;
+    /*text-decoration: underline;*/
+}
+.div-item{
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 3px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.div-item .item-name{
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+.div-item .item-img{
+    width: 280px;
+    height: 280px;
+    border-radius: 5px;
+}
+.div-item .item-owner-headimgurl{
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+.div-item .item-owner-nickname{
+    height: 40px;
+    line-height: 40px;
+    padding-left: 0px;
+}
+
+.a_view_all{
+    font-size: 16px;
+    color: #0c91e5;
+}
