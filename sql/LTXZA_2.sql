@@ -3,6 +3,7 @@
 -- 上传物品
 SELECT * FROM form_jsj WHERE form_type = 'LTXZA' AND form='BjBjYp' ORDER BY RAND() DESC;
 
+-- DELETE FROm form_jsj WHERE  form_type = 'LTXZA' AND form='BjBjYp' AND remark = 47;
 -- UPDATE form_jsj SET remark = '1' WHERE id = 519;
 -- UPDATE form_jsj SET remark = '2' WHERE id = 541;
 -- UPDATE form_jsj SET remark = '3' WHERE id = 545;
@@ -59,4 +60,4 @@ SELECT * FROM form_jsj WHERE form_type = 'LTXZA' AND form='BjBjYp' ORDER BY RAND
 
 -- 盲盒
 
-SELECT * FROM form_jsj WHERE form_type = 'LTXZA_BOX' ORDER BY ID DESC;
+SELECT * FROM form_jsj WHERE form_type = 'LTXZA_BOX' AND form = 'PNvPtm' ORDER BY ID DESC;
