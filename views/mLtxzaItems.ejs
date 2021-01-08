@@ -34,10 +34,10 @@
     {{#each this}}
     <div id="div_item_{{this.id}}" class="div-item">
         <div class="row">
-            <div class="col-lg-3 col-xs-12 item-name">{{this.itemName}}{{getBoxName this.remark}}</div>
+            <div class="col-lg-3 col-xs-12 item-name">
+                <p>{{this.itemName}}{{getBoxName this.remark}}</p>
             {{#each itemPicUrl}}
-            <div class="col-lg-3 col-xs-12 text-center">
-                <img src="{{this}}" class="item-img">
+                <p><img src="{{this}}" class="item-img"></p>
             </div>
             {{/each}}
         </div>
