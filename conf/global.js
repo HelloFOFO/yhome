@@ -5,10 +5,11 @@ let debug = require('./.debug');
 let db = {};
 if(debug){
     //非生产环境
-    db.slaveHost = process.env.db_slaveHost||'106.14.10.98';
-    db.host      = process.env.db_host||'106.14.10.98';
-    db.user      = 'sow';
-    db.password  = '90op()OP';
+    db.slaveHost = process.env.db_slaveHost||'127.0.0.1';
+    db.host      = process.env.db_host||'127.0.0.1';
+    db.port      = 3307;
+    db.user      = 'lzs';
+    db.password  = 'lzs';
     db.database  = 'yhome';
 }else{
     //生产环境

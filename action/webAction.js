@@ -554,3 +554,28 @@ exports.getLtxzaItems = function(req, res){
         res.json({"items":items})
     })
 }
+
+
+exports.renderLtxzaBox = function(req ,res){
+    let activityId = req.params.activityId
+    let activityName = yhomeCfg.jsjFormNameMapping[activityId]
+
+    res.render('mLtxzaBox', {"activityId": activityId, "activityName": activityName, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+}
+
+
+exports.getLtxzaBox = function(req, res){
+    let activityId = req.params.activityId
+    let items = []
+    dbService.getLtxzaMyBox(null, activityId, function(data){
+        if(data){
+            for(let i=0; i<data.length; i++){
+                let item = getJsjBoxDetail(data[i])
+                delete item.raw_data
+                items.push(item)
+            }
+        }
+        console.log(items)
+        res.json({"items":items})
+    })
+}

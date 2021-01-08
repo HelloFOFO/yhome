@@ -10,6 +10,7 @@ var pool  = mysql.createPool({
     user       : cfg.db.user,
     password   : cfg.db.password,
     database   : cfg.db.database,
+    port       : cfg.db.port || 3306,
     charset    : 'utf8'
     //charset    : 'utf8mb4', //如果用到emoji表情请使用此选项
     //connectionLimit :10     //池子里最多放多少connection，默认值是10
@@ -21,6 +22,7 @@ var pool_slave = mysql.createPool({
     user       : cfg.db.user,
     password   : cfg.db.password,
     database   : cfg.db.database,
+    port       : cfg.db.port || 3306,
     charset    : 'utf8'
     //charset    : 'utf8mb4', //如果用到emoji表情请使用此选项
     //connectionLimit :10     //池子里最多放多少connection，默认值是10
