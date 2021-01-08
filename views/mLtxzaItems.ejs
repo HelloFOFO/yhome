@@ -13,7 +13,7 @@
         </div>
         <div class="row margin-bottom-10">
             <div class="col-xs-12">
-                <div id="div_items" style="min-height: 200px; text-align: center">
+                <div id="div_items row" style="min-height: 200px; text-align: center">
 
                 </div>
             </div>
@@ -32,26 +32,11 @@
 
 <script type="text/x-handlebars-template" id="itemTemplate">
     {{#each this}}
-    <div id="div_item_{{this.id}}" class="div-item">
-        <div class="row">
-            <div class="col-lg-3 col-xs-12 item-name">
-                <p>{{this.itemName}}{{getBoxName this.remark}}</p>
-            {{#each itemPicUrl}}
-                <p><img src="{{this}}" class="item-img"></p>
-            </div>
-            {{/each}}
-        </div>
-        <!--{{#if this.x_field_weixin_headimgurl}}-->
-        <!--<div class="row margin-top-10">-->
-
-            <!--<div class="col-xs-3 text-right padding-right-0">-->
-                <!--<img src="{{this.x_field_weixin_headimgurl}}" class="item-owner-headimgurl">-->
-            <!--</div>-->
-            <!--<div class="col-xs-9 item-owner-nickname">-->
-                <!--{{this.x_field_weixin_nickname}}-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--{{/if}}-->
+    <div id="div_item_{{this.id}}" class="div-item col-lg-3 col-xs-12">
+        <p>{{this.itemName}}{{getBoxName this.remark}}</p>
+        {{#each itemPicUrl}}
+        <p><img src="{{this}}" class="item-img"></p>
+        {{/each}}
         <div class="clearfix"></div>
     </div>
     {{/each}}
