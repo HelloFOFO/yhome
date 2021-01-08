@@ -46,8 +46,8 @@ router.get('/ajax/activity/ltxza/:activityId/myBox', webAction.wxAuth, webAction
 
 
 
-router.get('/activity/ltxza/:activityId/items', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaItems)
-router.get('/ajax/activity/ltxza/:activityId/items', webAction.wxAuth,webAction.yHomeAuth, webAction.getLtxzaItems)
+router.get('/activity/ltxza/:activityId/items',   webAction.renderLtxzaItems)
+router.get('/ajax/activity/ltxza/:activityId/items',  webAction.getLtxzaItems)
 
 router.get('/activity/ltxza/:activityId/boxes', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaBox)
 router.get('/ajax/activity/ltxza/:activityId/boxes', webAction.wxAuth, webAction.yHomeAuth, webAction.getLtxzaBox)
