@@ -12,6 +12,9 @@ router.get('/onlinemarket/myorders', webAction.wxAuth, webAction.yHomeAuth, webA
 router.get('/onlinemarket/order/:id', webAction.wxAuth, webAction.yHomeAuth, webAction.renderOnlineOrder)
 
 
+router.get('/onlinemarket/lucky', webAction.renderOnlineLucky)
+
+
 router.get('/exchange/xmasActivityItems', webAction.wxAuth, webAction.yHomeAuth, webAction.renderXmasActivityItems)
 router.get('/ajax/exchange/xmasActivityItems', webAction.wxAuth,webAction.yHomeAuth, webAction.getXmasActivityItems)
 router.get('/exchange/myXmasActivityItems', webAction.wxAuth, webAction.yHomeAuth, webAction.renderMyXmasActivityItems)
@@ -51,7 +54,6 @@ router.get('/ajax/activity/ltxza/:activityId/items',  webAction.getLtxzaItems)
 
 router.get('/activity/ltxza/:activityId/boxes', webAction.wxAuth, webAction.yHomeAuth, webAction.renderLtxzaBox)
 router.get('/ajax/activity/ltxza/:activityId/boxes', webAction.wxAuth, webAction.yHomeAuth, webAction.getLtxzaBox)
-
 
 
 

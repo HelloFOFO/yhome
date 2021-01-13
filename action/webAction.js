@@ -246,6 +246,22 @@ exports.renderOnlineOrder = function(req, res){
     })
 }
 
+exports.renderOnlineLucky = function(req, res){
+    let useragent = req.headers['user-agent']
+
+    if (useragent.indexOf('MicroMessenger') != -1) {
+        // 是微信
+        let url = 'https://' + req.hostname + req.originalUrl
+        weiXinSdk.getConfigParams(url, false, ['updateAppMessageShareData'], (error, params) => {
+            res.render('mLucky', {isWeiXin:true, params: JSON.stringify(params), "pageTitle": "小宇家-每日免费抽大奖"})
+        })
+    } else {
+        res.render('mLucky', {isWeiXin:false, "pageTitle": "小宇家-蓝天下的至爱系列活动"})
+    }
+
+
+}
+
 exports.renderXmasActivityItems = function(req, res){
     res.render('xmasActivityItems')
 }

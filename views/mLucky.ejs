@@ -1,0 +1,63 @@
+<%include mHeader%>
+
+<link href="/css/pages/mLucky.css" rel="stylesheet" media="screen">
+
+<div class="div_head">
+</div>
+<div class="div_content" style="display: table;">
+    <!--页面内容放在这儿-->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <img src="/img/lucky.jpg" style="width: 100%">
+            </div>
+            <div class="col-xs-12 text-center margin-top-20" style="color:black">
+                <h2>每天一次，免费抽大奖！</h2>
+            </div>
+            <div class="col-xs-6 col-xs-offset-3 text-center div-step">
+                <i class="fa fa-upload"></i>
+                <h3 style="margin-top: 5px; color: red;"><a href="https://jinshuju.net/f/dj7OHz">上青佳园抽奖活动</a></h3>
+                <p>上青佳园周边的居民，点此进入每日免费抽奖</p>
+            </div>
+
+
+            <div class="col-xs-6 col-xs-offset-3 text-center div-step margin-top-30">
+                <i class="fa fa-flag"></i>
+                <h3 style="margin-top: 5px; color: red;"><a href="https://jinshuju.net/f/pbIDwZ">普雄社区抽奖活动</a></h3>
+                <p>普雄社区的居民，点此进入每日免费抽奖</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+<script>
+    <!--额外的一些JavaScript放在这儿-->
+    <%if (isWeiXin) {%>
+    let fwdLink = location.href.split('?')[0]
+    let desc = '关注小宇家公众号，每日免费抽大奖~'
+    //alert(fwdLink);
+    let cfgParams = JSON.parse('<%-params%>')
+    // cfgParams.debug = true;
+    // console.log(JSON.stringify(cfgParams))
+    wx.config(cfgParams);
+    // alert(JSON.stringify(<%-params%>));
+
+    wx.ready(function () {
+        wx.updateAppMessageShareData({
+            title: '小宇家市集每日免费抽奖', // 分享标题
+            desc: desc, // 分享描述
+            link: fwdLink, // 分享链接
+            imgUrl: 'https://yhome.tltr.top/img/logo.jpeg', // 分享图标
+            success: function () {
+            },
+            cancel: function () {
+            }
+        });
+    });
+    <%}%>
+</script>
+
+<%include mFooter%>
+
