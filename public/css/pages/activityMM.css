@@ -1,0 +1,76 @@
+.div-activity-date{
+    font-size: 16px;
+    font-weight: bold;
+    color: #e85425;
+    margin-top: 20px;
+}
+
+.div-activity{
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin: 3px 0px 5px 0px;
+    padding: 3px;
+
+}
+
+.div-activity div{
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.div-activity p{
+    margin-bottom: 5px;
+}
+
+.activity-title{
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 25px;
+}
+.activity-content{
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.a-button{
+    background-color: #45b6af;
+    border-radius: 3px;
+    padding: 4px;
+    color: white;
+    border-color: #3ea49d;
+}
+
+.a-button-disabled{
+    background-color: grey;
+    border-radius: 3px;
+    padding: 4px;
+    color: white;
+}
+
+.carousel-item{
+    padding: 0 15px;
+}
+.carousel-item img{
+    height: 220px !important;
+}
+
+.span-tag{
+    padding: 2px 2px;
+    border: 1px solid ;
+    border-radius: 3px;
+}
+
+.span-market{
+    background-color: yellow;
+    border-color: yellow;
+}
+.span-service{
+    background-color: #3ea49d;
+    border-color: #3ea49d;
+    color: white;
+}
+.span-heart{
+    background-color: darkred;
+    border-color: darkred;
+    color: white;
+}
